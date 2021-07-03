@@ -15,3 +15,5 @@ export interface PlayerInventory {
 	decorations: number[];
 }
 
+export type CraftingItems = "crumbs" | "rags" | "flowers";
+export type Craftable = "dish" | "decoration";
