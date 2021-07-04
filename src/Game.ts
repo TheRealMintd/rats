@@ -1,6 +1,6 @@
 import type { Ctx, Game } from "boardgame.io";
 
-import type { BaseResource, Craftable, CraftingItems, GameData } from "./types";
+import type { Resource, Craftable, CraftingItems, GameData } from "./types";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -8,24 +8,20 @@ export const Rats: Game = {
 		round: 0,
 		banquetGoals: Array<number | undefined>(5),
 		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
-			cocktailSwords: 0,
-			baubles: 0,
-			straw: 0,
-			crumbs: 0,
-			rags: 0,
-			flowers: 0,
+			cocktailSwords: { hasNest: false, amount: 0 },
+			baubles: { hasNest: false, amount: 0 },
+			straw: { hasNest: false, amount: 0 },
+			crumbs: { hasNest: false, amount: 0 },
+			rags: { hasNest: false, amount: 0 },
+			flowers: { hasNest: false, amount: 0 },
 			dishes: [],
 			decorations: [],
 		})),
 	}),
 	moves: {
-		addResource(
-			G: GameData,
-			ctx: Ctx,
-			resource: BaseResource,
-			amount: number
-		) {
-			G.playerData[parseInt(ctx.currentPlayer)][resource] += amount;
+		addResource(G: GameData, ctx: Ctx, resource: Resource, amount: number) {
+			G.playerData[parseInt(ctx.currentPlayer)][resource].amount +=
+				amount;
 		},
 		makeDishOrDecoration(
 			G: GameData,
@@ -44,8 +40,8 @@ export const Rats: Game = {
 			} else {
 				usedItem = "rags";
 			}
-			const value = inventory[usedItem];
-			inventory[usedItem] = 0;
+			const value = inventory[usedItem].amount;
+			inventory[usedItem].amount = 0;
 
 			if (type === "dish") {
 				inventory.dishes.push(value);

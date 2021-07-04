@@ -5,16 +5,21 @@ export interface GameData {
 }
 
 export interface PlayerInventory {
-	cocktailSwords: number;
-	baubles: number;
-	straw: number;
-	crumbs: number;
-	rags: number;
-	flowers: number;
+	cocktailSwords: BaseResource;
+	baubles: BaseResource;
+	straw: BaseResource;
+	crumbs: BaseResource;
+	rags: BaseResource;
+	flowers: BaseResource;
 	dishes: number[];
 	decorations: number[];
 }
 
-export type BaseResource = keyof Omit<PlayerInventory, "dishes" | "decorations">;
+export interface BaseResource {
+	hasNest: boolean;
+	amount: number;
+}
+
+export type Resource = keyof Omit<PlayerInventory, "dishes" | "decorations">;
 export type CraftingItems = "crumbs" | "rags" | "flowers";
 export type Craftable = "dish" | "decoration";
