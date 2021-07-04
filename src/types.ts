@@ -15,5 +15,6 @@ export interface PlayerInventory {
 	decorations: number[];
 }
 
+export type BaseResource = keyof Omit<PlayerInventory, "dishes" | "decorations">;
 export type CraftingItems = "crumbs" | "rags" | "flowers";
 export type Craftable = "dish" | "decoration";

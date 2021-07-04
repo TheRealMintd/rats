@@ -1,6 +1,6 @@
 import type { Ctx, Game } from "boardgame.io";
 
-import type { Craftable, CraftingItems, GameData } from "./types";
+import type { BaseResource, Craftable, CraftingItems, GameData } from "./types";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -19,6 +19,14 @@ export const Rats: Game = {
 		})),
 	}),
 	moves: {
+		addResource(
+			G: GameData,
+			ctx: Ctx,
+			resource: BaseResource,
+			amount: number
+		) {
+			G.playerData[parseInt(ctx.currentPlayer)][resource] += amount;
+		},
 		makeDishOrDecoration(
 			G: GameData,
 			ctx: Ctx,
