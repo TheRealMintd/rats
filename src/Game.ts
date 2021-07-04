@@ -20,8 +20,11 @@ export const Rats: Game = {
 	}),
 	moves: {
 		addResource(G: GameData, ctx: Ctx, resource: Resource, amount: number) {
-			G.playerData[parseInt(ctx.currentPlayer)][resource].amount +=
-				amount;
+			const targetResource =
+				G.playerData[parseInt(ctx.currentPlayer)][resource];
+			targetResource.amount += targetResource.hasNest
+				? amount * 2
+				: amount;
 		},
 		makeDishOrDecoration(
 			G: GameData,
