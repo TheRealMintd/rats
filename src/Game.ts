@@ -26,6 +26,19 @@ export const Rats: Game = {
 				? amount * 2
 				: amount;
 		},
+
+		playBaubles(G: GameData, ctx: Ctx, resource: Resource) {
+			const targetResource =
+				G.playerData[parseInt(ctx.currentPlayer)][resource];
+			targetResource.amount += 5;
+		},
+
+		addNest(G: GameData, ctx: Ctx, resource: Resource) {
+			const targetResource =
+				G.playerData[parseInt(ctx.currentPlayer)][resource];
+			targetResource.hasNest = true;
+		},
+
 		makeDishOrDecoration(
 			G: GameData,
 			ctx: Ctx,
