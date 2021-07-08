@@ -21,7 +21,14 @@ module.exports = {
 			"warn",
 			{ argsIgnorePattern: "^_" },
 		],
-		"@typescript-eslint/naming-convention": "warn",
+		"@typescript-eslint/naming-convention": [
+			"warn",
+			{
+				selector: "parameter",
+				format: ["camelCase"],
+				filter: { regex: "^G$", match: false },
+			},
+		],
 		"@typescript-eslint/semi": "warn",
 		"import/no-unresolved": "off",
 		"import/order": ["warn", { "newlines-between": "always" }],
