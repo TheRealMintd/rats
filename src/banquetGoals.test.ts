@@ -1,4 +1,4 @@
-import { Cheap, Generous, Greedy, Refined, Swanky } from "./banquetGoals";
+import { Cheap, Generous, Greedy, Refined, Swanky, Dapper } from "./banquetGoals";
 import { PlayerInventory } from "./types";
 import { defaultInventory } from "./utils";
 
@@ -83,4 +83,21 @@ it("correctly calculates rankings for 'Swanky'", () => {
 	expect(result.first.sort()).toEqual(["0"]);
 	expect(result.second.sort()).toEqual(["3"]);
 	expect(result.third.sort()).toEqual(["2", "4", "5"]);
+});
+
+it("correctly calculates rankings for 'Dapper'", () => {
+	const playerData: PlayerInventory[] = [
+		{ ...defaultInventory(), decorations: [20, 40, 40, 40, 40] }, // 180
+		{ ...defaultInventory(), dishes: [1000] }, // 0
+		{ ...defaultInventory(), decorations: [100, 100] }, // 200
+		{ ...defaultInventory(), decorations: [50, 50, 50, 50] }, // 200
+		{ ...defaultInventory(), decorations: [40, 40] }, // 80
+		{ ...defaultInventory(), decorations: [50, 30] }, // 80
+	];
+
+	const result = new Dapper().findWinners(playerData);
+
+	expect(result.first.sort()).toEqual(["2", "3"]);
+	expect(result.second.sort()).toEqual(["0"]);
+	expect(result.third.sort()).toEqual(["4", "5"]);
 });
