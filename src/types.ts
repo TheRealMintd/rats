@@ -1,6 +1,8 @@
+import type { BanquetGoal } from "./banquetGoals";
+
 export interface GameData {
 	round: number;
-	banquetGoals: Array<number | undefined>;
+	banquetGoals: Array<BanquetGoal>;
 	playerData: PlayerInventory[];
 	supplyTaken: Array<Resource | "none">;
 }

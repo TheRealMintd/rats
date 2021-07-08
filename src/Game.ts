@@ -6,7 +6,7 @@ export const Rats: Game = {
 	maxPlayers: 6,
 	setup: (ctx): GameData => ({
 		round: 0,
-		banquetGoals: Array<number | undefined>(5),
+		banquetGoals: [],
 		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
 			cocktailSwords: { hasNest: false, amount: 0 },
 			baubles: { hasNest: false, amount: 0 },
