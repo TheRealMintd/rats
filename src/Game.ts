@@ -61,7 +61,7 @@ export const Rats: Game = {
 			selectedPlayer: number
 		): void {
 			const targetResource =
-				G.playerData[parseInt(ctx.currentPlayer)]["cocktailSwords"];
+				G.playerData[parseInt(ctx.currentPlayer)].cocktailSwords;
 
 			if (targetResource.amount > 0) {
 				const selectedResource = G.playerData[selectedPlayer][resource];
@@ -86,7 +86,7 @@ export const Rats: Game = {
 		},
 		useBaubles(G: GameData, ctx: Ctx, resource: Resource): void {
 			const targetResource =
-				G.playerData[parseInt(ctx.currentPlayer)]["baubles"];
+				G.playerData[parseInt(ctx.currentPlayer)].baubles;
 			if (targetResource.amount > 0) {
 				targetResource.amount = 0;
 				G.playerData[parseInt(ctx.currentPlayer)][resource].amount += 5;
@@ -94,7 +94,7 @@ export const Rats: Game = {
 		},
 		buildNest(G: GameData, ctx: Ctx, resource: Resource): void {
 			const targetResource =
-				G.playerData[parseInt(ctx.currentPlayer)]["straw"];
+				G.playerData[parseInt(ctx.currentPlayer)].straw;
 			if (targetResource.amount > 0) {
 				targetResource.amount = 0;
 				G.playerData[parseInt(ctx.currentPlayer)][resource].hasNest =
