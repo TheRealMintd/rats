@@ -76,3 +76,23 @@ export class Greedy extends BanquetGoal {
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
+
+/**
+ * Class representing the "Generous" banquet goal.
+ *
+ * Players will be ranked based on the number of dishes that they have made.
+ * Players without any dishes will not be considered for this ranking.
+ */
+export class Generous extends BanquetGoal {
+	override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.filter((inventory) => inventory.dishes.length)
+			.map((inventory, player) => ({
+				player: player.toString(),
+				value: inventory.dishes.length,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
