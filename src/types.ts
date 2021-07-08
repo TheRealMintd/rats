@@ -2,6 +2,7 @@ export interface GameData {
 	round: number;
 	banquetGoals: Array<number | undefined>;
 	playerData: PlayerInventory[];
+	supplyTaken: Array<Resource | "none">;
 }
 
 export interface PlayerInventory {

@@ -17,6 +17,7 @@ export const Rats: Game = {
 			dishes: [],
 			decorations: [],
 		})),
+		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none")
 	}),
 	moves: {
 		addResource(G: GameData, ctx: Ctx, resource: Resource, amount: number) {
@@ -52,5 +53,30 @@ export const Rats: Game = {
 				inventory.decorations.push(value);
 			}
 		},
+		useCocktailSwords(
+			G: GameData, 
+			ctx: Ctx, 
+			resource: Resource, 
+			amount: number, 
+			selectedPlayer: number
+		): void {
+			const targetResource = G.playerData[parseInt(ctx.currentPlayer)]["cocktailSwords"];
+
+			if (targetResource.amount > 0) {
+				const selectedResource = G.playerData[selectedPlayer][resource];
+
+				// validate the resource of selected player has not been taken by other player
+				if (G.supplyTaken[selectedPlayer] !== resource && selectedResource.amount >= amount) {
+					// reset cocktailSwords' amount of current player
+					targetResource.amount = 0;
+					// deduct resource's amount of selected player
+					selectedResource.amount -= amount;
+					// add resource's amount of current player
+					G.playerData[parseInt(ctx.currentPlayer)][resource].amount += amount;
+					// update supply taken for selected player
+					G.supplyTaken[selectedPlayer] = resource;
+				}
+			}
+		}
 	},
 };
