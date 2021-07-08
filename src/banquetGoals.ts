@@ -56,3 +56,23 @@ export class Cheap extends BanquetGoal {
 			.sort(({ value: a }, { value: b }) => a - b);
 	}
 }
+
+/**
+ * Class representing the "Greedy" banquet goal
+ *
+ * Players will be ranked based on the value of their largest dish. Players
+ * without any dishes will not be considered for this ranking.
+ */
+export class Greedy extends BanquetGoal {
+	override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.filter((inventory) => inventory.dishes.length)
+			.map((inventory, player) => ({
+				player: player.toString(),
+				value: Math.max(...inventory.dishes),
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
