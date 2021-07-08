@@ -131,3 +131,28 @@ export class Refined extends BanquetGoal {
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
+
+/**
+ * Class representing the "Swanky" banquet goal
+ *
+ * Player will be ranked based on the number of decorations that
+ * they have made. The player with the highest number of decorations wins.
+ * Players without any decorations will not be considered for this ranking.
+ */
+export class Swanky extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number] => [
+				player,
+				inventory.decorations.length,
+			])
+			.filter(([_, decorations]) => decorations)
+			.map(([player, decorations]) => ({
+				player: player.toString(),
+				value: decorations,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
