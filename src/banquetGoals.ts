@@ -34,7 +34,9 @@ export abstract class BanquetGoal {
 		};
 	}
 
-	abstract findInternalScores(playerData: PlayerInventory[]): InternalScore[];
+	protected abstract findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[];
 }
 
 /**
@@ -45,7 +47,7 @@ export abstract class BanquetGoal {
  * with the least number of dishes + decorations wins.
  */
 export class Cheap extends BanquetGoal {
-	override findInternalScores(
+	protected override findInternalScores(
 		playerData: PlayerInventory[]
 	): InternalScore[] {
 		return playerData
@@ -64,7 +66,7 @@ export class Cheap extends BanquetGoal {
  * without any dishes will not be considered for this ranking.
  */
 export class Greedy extends BanquetGoal {
-	override findInternalScores(
+	protected override findInternalScores(
 		playerData: PlayerInventory[]
 	): InternalScore[] {
 		return playerData
@@ -84,7 +86,7 @@ export class Greedy extends BanquetGoal {
  * Players without any dishes will not be considered for this ranking.
  */
 export class Generous extends BanquetGoal {
-	override findInternalScores(
+	protected override findInternalScores(
 		playerData: PlayerInventory[]
 	): InternalScore[] {
 		return playerData
