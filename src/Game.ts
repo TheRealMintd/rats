@@ -77,6 +77,20 @@ export const Rats: Game = {
 					G.supplyTaken[selectedPlayer] = resource;
 				}
 			}
+		},
+		useBaubles(G: GameData, ctx: Ctx, resource: Resource): void {
+			const targetResource = G.playerData[parseInt(ctx.currentPlayer)]["baubles"];
+			if (targetResource.amount > 0) {
+				targetResource.amount = 0;
+				G.playerData[parseInt(ctx.currentPlayer)][resource].amount += 5;
+			}
+		},
+		buildNest(G: GameData, ctx: Ctx, resource: Resource): void {
+			const targetResource = G.playerData[parseInt(ctx.currentPlayer)]["straw"];
+			if (targetResource.amount > 0) {
+				targetResource.amount = 0;
+				G.playerData[parseInt(ctx.currentPlayer)][resource].hasNest = true;
+			}
 		}
 	},
 };
