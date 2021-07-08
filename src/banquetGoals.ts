@@ -12,31 +12,12 @@ interface InternalScore {
 }
 
 export abstract class BanquetGoal {
-	abstract findWinners(playerData: PlayerInventory[]): Ranking;
-}
-
-/**
- * Class representing the "Cheap" banquet goal
- *
- * Player will be ranked based on the total number of dishes and decorations that
- * they have made, disregarding the value of the dishes themselves. The player
- * with the least number of dishes + decorations wins.
- */
-export class Cheap extends BanquetGoal {
 	findWinners(playerData: PlayerInventory[]): Ranking {
-		const dishDecorationCount: InternalScore[] = playerData.map(
-			(inventory, player) => ({
-				player: player.toString(),
-				value: inventory.dishes.length + inventory.decorations.length,
-			})
-		);
-		dishDecorationCount.sort(({ value: a }, { value: b }) => a - b);
-
 		const first: InternalScore[] = [];
 		const second: InternalScore[] = [];
 		const third: InternalScore[] = [];
 
-		dishDecorationCount.forEach((score) => {
+		this.findInternalScores(playerData).forEach((score) => {
 			if (!first.length || score.value === first[0].value) {
 				first.push(score);
 			} else if (!second.length || score.value === second[0].value) {
@@ -51,5 +32,27 @@ export class Cheap extends BanquetGoal {
 			second: second.map((score) => score.player),
 			third: third.map((score) => score.player),
 		};
+	}
+
+	abstract findInternalScores(playerData: PlayerInventory[]): InternalScore[];
+}
+
+/**
+ * Class representing the "Cheap" banquet goal
+ *
+ * Player will be ranked based on the total number of dishes and decorations that
+ * they have made, disregarding the value of the dishes themselves. The player
+ * with the least number of dishes + decorations wins.
+ */
+export class Cheap extends BanquetGoal {
+	override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player) => ({
+				player: player.toString(),
+				value: inventory.dishes.length + inventory.decorations.length,
+			}))
+			.sort(({ value: a }, { value: b }) => a - b);
 	}
 }
