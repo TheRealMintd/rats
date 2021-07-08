@@ -106,3 +106,28 @@ export class Generous extends BanquetGoal {
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
+
+/**
+ * Class representing the "Refined" banquet goal
+ *
+ * Player will be ranked based on the total value of dishes that
+ * they have made. The player with the highest total dish value wins.
+ * Players without any dishes will not be considered for this ranking.
+ */
+export class Refined extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number] => [
+				player,
+				inventory.dishes.reduce((acc, curr) => acc + curr, 0),
+			])
+			.filter(([_, dishes]) => dishes)
+			.map(([player, dishes]) => ({
+				player: player.toString(),
+				value: dishes,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
