@@ -94,10 +94,14 @@ export class Generous extends BanquetGoal {
 		playerData: PlayerInventory[]
 	): InternalScore[] {
 		return playerData
-			.filter((inventory) => inventory.dishes.length)
-			.map((inventory, player) => ({
+			.map((inventory, player): [number, number[]] => [
+				player,
+				inventory.dishes,
+			])
+			.filter(([_, dishes]) => dishes.length)
+			.map(([player, dishes]) => ({
 				player: player.toString(),
-				value: inventory.dishes.length,
+				value: dishes.length,
 			}))
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
