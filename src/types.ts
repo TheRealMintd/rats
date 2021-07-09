@@ -24,5 +24,4 @@ export interface BaseResource {
 }
 
 export type Resource = keyof Omit<PlayerInventory, "dishes" | "decorations">;
-export type CraftingItems = "crumbs" | "rags" | "flowers";
 export type Craftable = "dish" | "decoration";

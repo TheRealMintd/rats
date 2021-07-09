@@ -1,6 +1,6 @@
 import type { Ctx, Game } from "boardgame.io";
 
-import type { Resource, Craftable, CraftingItems, GameData } from "./types";
+import type { Resource, Craftable, GameData } from "./types";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -27,31 +27,15 @@ export const Rats: Game = {
 				? amount * 2
 				: amount;
 		},
-		makeDishOrDecoration(
-			G: GameData,
-			ctx: Ctx,
-			type: Craftable,
-			usingFlowers = false
-		): void {
+		makeDish(G: GameData, ctx: Ctx): void {
 			const inventory = G.playerData[parseInt(ctx.currentPlayer)];
-
-			// extract the ingredient that is being used to craft
-			let usedItem: CraftingItems;
-			if (usingFlowers) {
-				usedItem = "flowers";
-			} else if (type === "dish") {
-				usedItem = "crumbs";
-			} else {
-				usedItem = "rags";
-			}
-			const value = inventory[usedItem].amount;
-			inventory[usedItem].amount = 0;
-
-			if (type === "dish") {
-				inventory.dishes.push(value);
-			} else {
-				inventory.decorations.push(value);
-			}
+			inventory.dishes.push(inventory.crumbs.amount);
+			inventory.crumbs.amount = 0;
+		},
+		makeDecoration(G: GameData, ctx: Ctx): void {
+			const inventory = G.playerData[parseInt(ctx.currentPlayer)];
+			inventory.decorations.push(inventory.rags.amount);
+			inventory.rags.amount = 0;
 		},
 		useCocktailSwords(
 			G: GameData,
@@ -100,6 +84,13 @@ export const Rats: Game = {
 				G.playerData[parseInt(ctx.currentPlayer)][resource].hasNest =
 					true;
 			}
+		},
+		useFlowers(G: GameData, ctx: Ctx, type: Craftable): void {
+			const inventory = G.playerData[parseInt(ctx.currentPlayer)];
+			inventory[type === "dish" ? "dishes" : "decorations"].push(
+				inventory.flowers.amount
+			);
+			inventory.flowers.amount = 0;
 		},
 	},
 };
