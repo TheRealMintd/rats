@@ -247,3 +247,29 @@ export class Elegant extends BanquetGoal {
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
+
+/**
+ * Class representing the "Dainty" banquet goal
+ *
+ * Players will be ranked based on the number of small decoration and dishes.
+ * (value less than 3). Players without any decoration will not be considered for this ranking.
+ */
+export class Dainty extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number[]] => [
+				player,
+				inventory.decorations
+					.concat(inventory.dishes)
+					.filter((i) => i <= 3),
+			])
+			.filter(([_, combined]) => combined.length)
+			.map(([player, combined]) => ({
+				player: player.toString(),
+				value: combined.length,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}

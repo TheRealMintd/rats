@@ -7,6 +7,7 @@ import {
 	Dapper,
 	Elegant,
 	Grandiose,
+	Dainty,
 } from "./banquetGoals";
 import { PlayerInventory } from "./types";
 import { defaultInventory } from "./utils";
@@ -113,7 +114,7 @@ it("correctly calculates rankings for 'Dapper'", () => {
 
 it("correctly calculates rankings for 'Elegant'", () => {
 	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), dishes:[4, 7, 9], decorations: [2, 3] }, // 3
+		{ ...defaultInventory(), dishes: [4, 7, 9], decorations: [2, 3] }, // 3
 		{ ...defaultInventory(), dishes: [1] }, // 1
 		{ ...defaultInventory(), dishes: [9, 2, 8], decorations: [12, 10, 11] }, // 5
 		{ ...defaultInventory(), decorations: [1, 2, 3] }, // 3
@@ -143,4 +144,21 @@ it("correctly calculates rankings for 'Grandiose'", () => {
 	expect(result.first.sort()).toEqual(["2"]);
 	expect(result.second.sort()).toEqual(["3", "5"]);
 	expect(result.third.sort()).toEqual(["0", "4"]);
+});
+
+it("correctly calculates rankings for 'Dainty'", () => {
+	const playerData: PlayerInventory[] = [
+		{ ...defaultInventory(), decorations: [2, 3, 2, 4, 3, 2] }, //5
+		{ ...defaultInventory(), dishes: [1000] }, //0
+		{ ...defaultInventory(), decorations: [1] }, //1
+		{ ...defaultInventory(), decorations: [1, 1] }, //2
+		{ ...defaultInventory(), dishes: [1], decorations: [4] }, //1
+		{ ...defaultInventory(), decorations: [5] }, //0
+	];
+
+	const result = new Dainty().findWinners(playerData);
+
+	expect(result.first.sort()).toEqual(["0"]);
+	expect(result.second.sort()).toEqual(["3"]);
+	expect(result.third.sort()).toEqual(["2", "4"]);
 });
