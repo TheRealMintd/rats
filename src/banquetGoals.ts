@@ -181,3 +181,45 @@ export class Dapper extends BanquetGoal {
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
+
+/**
+ * Class representing the "Elegant" banquet goal
+ *
+ * Player will be ranked based on the run of dishes/decorations value that
+ * they have. The player with the longest run wins.
+ * Players without any runs will not be considered for this ranking.
+ */
+export class Elegant extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number] => [
+				player,
+				this.findLongestRun(
+					inventory.dishes
+						.concat(inventory.decorations)
+						.sort((a, b) => a - b)
+				),
+			])
+			.filter(([_, run]) => run > 1)
+			.map(([player, run]) => ({
+				player: player.toString(),
+				value: run,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+
+	private findLongestRun(sortedArr: number[]): number {
+		// each index stores the accumulated run
+		const retVal = new Array(sortedArr.length).fill(1).map(() => 1);
+		sortedArr.forEach((ele, index) => {
+			// skip the first element and compare the previous and current element
+			retVal[index] =
+				index > 0 && ele - sortedArr[index - 1] === 1
+					? retVal[index - 1] + 1
+					: retVal[index];
+		});
+		return Math.max(...retVal);
+	}
+}
