@@ -223,3 +223,27 @@ export class Elegant extends BanquetGoal {
 		return Math.max(...retVal);
 	}
 }
+
+/**
+ * Class representing the "Grandiose" banquet goal
+ *
+ * Players will be ranked based on the value of their largest decoration. Players
+ * without any decoration will not be considered for this ranking.
+ */
+ export class Grandiose extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number[]] => [
+				player,
+				inventory.decorations,
+			])
+			.filter(([_, decorations]) => decorations.length)
+			.map(([player, decorations]) => ({
+				player: player.toString(),
+				value: Math.max(...decorations),
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
