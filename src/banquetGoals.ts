@@ -274,6 +274,12 @@ export class Dainty extends BanquetGoal {
 	}
 }
 
+/**
+ * Class representing the "Composed" banquet goal
+ *
+ * Players will be ranked based on the number of decoration and/or dishes with matching values.
+ * Players without any decoration and/or dishes with matching values will not be considered for this ranking.
+ */
 export class Composed extends BanquetGoal {
 	protected override findInternalScores(
 		playerData: PlayerInventory[]
@@ -299,6 +305,12 @@ export class Composed extends BanquetGoal {
 	}
 }
 
+/**
+ * Class representing the "Plush" banquet goal
+ *
+ * Players will be ranked based on the number of nest.
+ * Players without any nest will not be considered for this ranking.
+ */
 export class Plush extends BanquetGoal {
 	protected override findInternalScores(
 		playerData: PlayerInventory[]
