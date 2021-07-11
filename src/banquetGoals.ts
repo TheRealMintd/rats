@@ -315,22 +315,23 @@ export class Composed extends BanquetGoal {
  * Players without any nests will not be considered for this ranking.
  */
 export class Plush extends BanquetGoal {
+	private static readonly resources: Resource[] = [
+		"cocktailSwords",
+		"baubles",
+		"straw",
+		"crumbs",
+		"rags",
+		"flowers",
+	];
+
 	protected override findInternalScores(
 		playerData: PlayerInventory[]
 	): InternalScore[] {
-		const nonNestBuild: Resource[] = [
-			"cocktailSwords",
-			"baubles",
-			"crumbs",
-			"straw",
-			"rags",
-			"flowers",
-		];
 		return playerData
 			.map((inventory, player): [number, number] => [
 				player,
-				nonNestBuild
-					.map((element) => inventory[element].hasNest)
+				Plush.resources
+					.map((resource) => inventory[resource].hasNest)
 					.filter((i) => i).length,
 			])
 			.filter(([_, numNest]) => numNest)
