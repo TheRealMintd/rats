@@ -277,8 +277,9 @@ export class Dainty extends BanquetGoal {
 /**
  * Class representing the "Composed" banquet goal
  *
- * Players will be ranked based on the number of decoration and/or dishes with matching values.
- * Players without any decoration and/or dishes with matching values will not be considered for this ranking.
+ * Players will be ranked based on the number of decoration and/or dishes with
+ * matching values. Players without any decoration and/or dishes with matching
+ * values will not be considered for this ranking.
  */
 export class Composed extends BanquetGoal {
 	protected override findInternalScores(
@@ -296,12 +297,12 @@ export class Composed extends BanquetGoal {
 			}))
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
+
 	private totalFreq(initial: number[]): number {
-		// each index stores the accumulated run
-		const frequency = Array.from(new Set(initial)).map(
-			(val) => initial.filter((v) => v === val).length
-		);
-		return frequency.filter((item) => item > 1).reduce((a, b) => a + b, 0);
+		return Array.from(new Set(initial))
+			.map((val) => initial.filter((v) => v === val).length)
+			.filter((item) => item > 1)
+			.reduce((a, b) => a + b, 0);
 	}
 }
 
