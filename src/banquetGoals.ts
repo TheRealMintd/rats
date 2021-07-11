@@ -214,7 +214,8 @@ export class Elegant extends BanquetGoal {
 		// each index stores the accumulated run
 		const retVal = new Array(sortedArr.length).fill(1).map(() => 1);
 		sortedArr.forEach((ele, index) => {
-			// skip the first element and compare the previous and current element
+			// skip the first element and compare the previous and current
+			// element
 			retVal[index] =
 				index > 0 && ele - sortedArr[index - 1] === 1
 					? retVal[index - 1] + 1
@@ -227,8 +228,8 @@ export class Elegant extends BanquetGoal {
 /**
  * Class representing the "Grandiose" banquet goal
  *
- * Players will be ranked based on the value of their largest decoration. Players
- * without any decoration will not be considered for this ranking.
+ * Players will be ranked based on the value of their largest decoration.
+ * Players without any decoration will not be considered for this ranking.
  */
 export class Grandiose extends BanquetGoal {
 	protected override findInternalScores(
@@ -252,7 +253,8 @@ export class Grandiose extends BanquetGoal {
  * Class representing the "Dainty" banquet goal
  *
  * Players will be ranked based on the number of small decoration and dishes.
- * (value less than 3). Players without any decoration will not be considered for this ranking.
+ * (value less than 3). Players without any decoration will not be considered
+ * for this ranking.
  */
 export class Dainty extends BanquetGoal {
 	protected override findInternalScores(
@@ -309,8 +311,8 @@ export class Composed extends BanquetGoal {
 /**
  * Class representing the "Plush" banquet goal
  *
- * Players will be ranked based on the number of nest.
- * Players without any nest will not be considered for this ranking.
+ * Players will be ranked based on the number of nests.
+ * Players without any nests will not be considered for this ranking.
  */
 export class Plush extends BanquetGoal {
 	protected override findInternalScores(
