@@ -212,16 +212,17 @@ export class Elegant extends BanquetGoal {
 
 	private findLongestRun(sortedArr: number[]): number {
 		// each index stores the accumulated run
-		const retVal = new Array(sortedArr.length).fill(1).map(() => 1);
+		const runLengths: number[] = [];
 		sortedArr.forEach((ele, index) => {
 			// skip the first element and compare the previous and current
 			// element
-			retVal[index] =
+			runLengths.push(
 				index > 0 && ele - sortedArr[index - 1] === 1
-					? retVal[index - 1] + 1
-					: retVal[index];
+					? runLengths[index - 1] + 1
+					: 1
+			);
 		});
-		return Math.max(...retVal);
+		return Math.max(...runLengths);
 	}
 }
 
