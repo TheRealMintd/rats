@@ -8,6 +8,7 @@ import {
 	Elegant,
 	Grandiose,
 	Dainty,
+	Composed,
 } from "./banquetGoals";
 import { PlayerInventory } from "./types";
 import { defaultInventory } from "./utils";
@@ -161,4 +162,21 @@ it("correctly calculates rankings for 'Dainty'", () => {
 	expect(result.first.sort()).toEqual(["0"]);
 	expect(result.second.sort()).toEqual(["3"]);
 	expect(result.third.sort()).toEqual(["2", "4"]);
+});
+
+it("correctly calculates rankings for 'Composed'", () => {
+	const playerData: PlayerInventory[] = [
+		{ ...defaultInventory(), decorations: [2, 2, 2, 4, 4, 2] }, //6
+		{ ...defaultInventory(), dishes: [1000] }, //0
+		{ ...defaultInventory(), decorations: [1] }, //0
+		{ ...defaultInventory(), decorations: [1, 1] }, //2
+		{ ...defaultInventory(), dishes: [4], decorations: [4] }, //2
+		{ ...defaultInventory(), decorations: [5, 5, 2, 5] }, //3
+	];
+
+	const result = new Composed().findWinners(playerData);
+
+	expect(result.first.sort()).toEqual(["0"]);
+	expect(result.second.sort()).toEqual(["5"]);
+	expect(result.third.sort()).toEqual(["3", "4"]);
 });

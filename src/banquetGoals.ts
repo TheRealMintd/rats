@@ -230,7 +230,7 @@ export class Elegant extends BanquetGoal {
  * Players will be ranked based on the value of their largest decoration. Players
  * without any decoration will not be considered for this ranking.
  */
- export class Grandiose extends BanquetGoal {
+export class Grandiose extends BanquetGoal {
 	protected override findInternalScores(
 		playerData: PlayerInventory[]
 	): InternalScore[] {
@@ -271,5 +271,30 @@ export class Dainty extends BanquetGoal {
 				value: combined.length,
 			}))
 			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
+
+export class Composed extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number] => [
+				player,
+				this.totalFreq(inventory.decorations.concat(inventory.dishes)),
+			])
+			.filter(([_, combined]) => combined)
+			.map(([player, combined]) => ({
+				player: player.toString(),
+				value: combined,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+	private totalFreq(initial: number[]): number {
+		// each index stores the accumulated run
+		const frequency = Array.from(new Set(initial)).map(
+			(val) => initial.filter((v) => v === val).length
+		);
+		return frequency.filter((item) => item > 1).reduce((a, b) => a + b, 0);
 	}
 }
