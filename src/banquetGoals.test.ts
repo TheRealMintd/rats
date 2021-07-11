@@ -70,7 +70,7 @@ it("correctly calculates rankings for 'Refined'", () => {
 		{ ...defaultInventory(), dishes: [100, 100] }, // 200
 		{ ...defaultInventory(), dishes: [50, 50, 50, 50] }, // 200
 		{ ...defaultInventory(), dishes: [40, 40] }, // 80
-		{ ...defaultInventory(), dishes: [50, 30] }, // 80
+		{ ...defaultInventory(), dishes: [30, 30] }, // 60
 	];
 
 	const result = new Refined().findWinners(playerData);
@@ -87,7 +87,7 @@ it("correctly calculates rankings for 'Swanky'", () => {
 		{ ...defaultInventory(), decorations: [100, 100] }, // 2
 		{ ...defaultInventory(), decorations: [50, 50, 50, 50] }, // 4
 		{ ...defaultInventory(), decorations: [40, 40] }, // 2
-		{ ...defaultInventory(), decorations: [50, 30] }, // 2
+		{ ...defaultInventory(), decorations: [30] }, // 1
 	];
 
 	const result = new Swanky().findWinners(playerData);
@@ -104,7 +104,7 @@ it("correctly calculates rankings for 'Dapper'", () => {
 		{ ...defaultInventory(), decorations: [100, 100] }, // 200
 		{ ...defaultInventory(), decorations: [50, 50, 50, 50] }, // 200
 		{ ...defaultInventory(), decorations: [40, 40] }, // 80
-		{ ...defaultInventory(), decorations: [50, 30] }, // 80
+		{ ...defaultInventory(), decorations: [30, 30] }, // 60
 	];
 
 	const result = new Dapper().findWinners(playerData);
