@@ -9,6 +9,7 @@ import {
 	Grandiose,
 	Dainty,
 	Composed,
+	Plush,
 } from "./banquetGoals";
 import { PlayerInventory } from "./types";
 import { defaultInventory } from "./utils";
@@ -179,4 +180,41 @@ it("correctly calculates rankings for 'Composed'", () => {
 	expect(result.first.sort()).toEqual(["0"]);
 	expect(result.second.sort()).toEqual(["5"]);
 	expect(result.third.sort()).toEqual(["3", "4"]);
+});
+
+it("correctly calculates rankings for 'Plush'", () => {
+	const playerData: PlayerInventory[] = [
+		{
+			...defaultInventory(),
+			baubles: { hasNest: true, amount: 0 },
+			straw: { hasNest: true, amount: 6 },
+			flowers: { hasNest: false, amount: 6 },
+		}, //2
+		{
+			...defaultInventory(),
+			baubles: { hasNest: false, amount: 0 },
+			straw: { hasNest: false, amount: 6 },
+			flowers: { hasNest: false, amount: 6 },
+		}, //0
+		{
+			...defaultInventory(),
+			baubles: { hasNest: true, amount: 0 },
+			straw: { hasNest: true, amount: 6 },
+			flowers: { hasNest: true, amount: 6 },
+		}, //3
+		{ ...defaultInventory(), decorations: [1, 1] }, //0
+		{
+			...defaultInventory(),
+			baubles: { hasNest: true, amount: 0 },
+			straw: { hasNest: false, amount: 6 },
+			flowers: { hasNest: false, amount: 6 },
+		}, //1
+		{ ...defaultInventory(), decorations: [5, 5, 2, 5] }, //0
+	];
+
+	const result = new Plush().findWinners(playerData);
+
+	expect(result.first.sort()).toEqual(["2"]);
+	expect(result.second.sort()).toEqual(["0"]);
+	expect(result.third.sort()).toEqual(["4"]);
 });

@@ -1,4 +1,4 @@
-import type { PlayerInventory } from "./types";
+import type { PlayerInventory, Resource } from "./types";
 
 export interface Ranking {
 	first: string[];
@@ -296,5 +296,33 @@ export class Composed extends BanquetGoal {
 			(val) => initial.filter((v) => v === val).length
 		);
 		return frequency.filter((item) => item > 1).reduce((a, b) => a + b, 0);
+	}
+}
+
+export class Plush extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		const nonNestBuild: Resource[] = [
+			"cocktailSwords",
+			"baubles",
+			"crumbs",
+			"straw",
+			"rags",
+			"flowers",
+		];
+		return playerData
+			.map((inventory, player): [number, number] => [
+				player,
+				nonNestBuild
+					.map((element) => inventory[element].hasNest)
+					.filter((i) => i).length,
+			])
+			.filter(([_, numNest]) => numNest)
+			.map(([player, numNest]) => ({
+				player: player.toString(),
+				value: numNest,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
