@@ -1,5 +1,7 @@
 import type { Ctx, Game } from "boardgame.io";
+import { INVALID_MOVE } from "boardgame.io/core";
 
+import type { BanquetGoal } from "./banquetGoals";
 import type { Resource, Craftable, GameData } from "./types";
 
 export const Rats: Game = {
@@ -91,6 +93,16 @@ export const Rats: Game = {
 				inventory.flowers.amount
 			);
 			inventory.flowers.amount = 0;
+		},
+		pickBanquetGoal(
+			G: GameData,
+			ctx: Ctx,
+			banGoal: BanquetGoal
+		): void | typeof INVALID_MOVE {
+			if (G.banquetGoals.includes(banGoal)) {
+				return INVALID_MOVE;
+			}
+			G.banquetGoals.push(banGoal);
 		},
 	},
 };
