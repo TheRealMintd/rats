@@ -2,7 +2,7 @@ import type { BanquetGoal } from "./banquetGoals";
 
 export interface GameData {
 	round: number;
-	banquetGoals: Array<BanquetGoal>;
+	banquetGoalIndexes: number[];
 	playerData: PlayerInventory[];
 	supplyTaken: Array<Resource | "none">;
 }

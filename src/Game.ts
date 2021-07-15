@@ -1,14 +1,13 @@
 import type { Ctx, Game } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
 
-import type { BanquetGoal } from "./banquetGoals";
 import type { Resource, Craftable, GameData } from "./types";
 
 export const Rats: Game = {
 	maxPlayers: 6,
 	setup: (ctx): GameData => ({
 		round: 0,
-		banquetGoals: [],
+		banquetGoalIndexes: [],
 		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
 			cocktailSwords: { hasNest: false, amount: 0 },
 			baubles: { hasNest: false, amount: 0 },
@@ -96,13 +95,13 @@ export const Rats: Game = {
 		},
 		pickBanquetGoal(
 			G: GameData,
-			ctx: Ctx,
-			banGoal: BanquetGoal
+			_: Ctx,
+			index: number
 		): void | typeof INVALID_MOVE {
-			if (G.banquetGoals.includes(banGoal)) {
+			if (G.banquetGoalIndexes.includes(index)) {
 				return INVALID_MOVE;
 			}
-			G.banquetGoals.push(banGoal);
+			G.banquetGoalIndexes.push(index);
 		},
 	},
 };
