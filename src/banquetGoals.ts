@@ -343,3 +343,17 @@ export class Dainty extends BanquetGoal {
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
+
+export const banquetGoals: BanquetGoal[] = [
+	new Cheap(),
+	new Composed(),
+	new Greedy(),
+	new Refined(),
+	new Generous(),
+	new Plush(),
+	new Swanky(),
+	new Dapper(),
+	new Grandiose(),
+	new Elegant(),
+	new Dainty(),
+];
