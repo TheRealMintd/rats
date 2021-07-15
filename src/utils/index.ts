@@ -22,14 +22,14 @@ export function defaultInventory(): PlayerInventory {
  */
 export function sortedByCocktailSowrds(G: GameData): string[] {
 	return G.playerData
-		.filter((inventory) => {
-			inventory.cocktailSwords.amount >
-				G.playerData[G.host].cocktailSwords.amount;
-		})
 		.map((inventory, player) => ({
 			player,
 			cocktailSwords: inventory.cocktailSwords.amount,
 		}))
+		.filter(
+			(obj) =>
+				obj.cocktailSwords > G.playerData[G.host].cocktailSwords.amount
+		)
 		.sort(({ cocktailSwords: a }, { cocktailSwords: b }) => b - a)
 		.map((obj) => obj.player.toString());
 }

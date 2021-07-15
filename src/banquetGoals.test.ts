@@ -11,8 +11,8 @@ import {
 	Composed,
 	Plush,
 } from "./banquetGoals";
-import { PlayerInventory } from "./types";
-import { defaultInventory } from "./utils";
+import { GameData, PlayerInventory } from "./types";
+import { defaultInventory, sortedByCocktailSowrds } from "./utils";
 
 it("correctly calculates rankings for 'Cheap'", () => {
 	const playerData: PlayerInventory[] = [
@@ -217,4 +217,26 @@ it("correctly calculates rankings for 'Plush'", () => {
 	expect(result.first.sort()).toEqual(["2"]);
 	expect(result.second.sort()).toEqual(["0"]);
 	expect(result.third.sort()).toEqual(["4"]);
+});
+
+it("correctly calculates the play order for 'outDoCocktailSwords' phase", () => {
+	const playerData: PlayerInventory[] = [
+		{ ...defaultInventory(), cocktailSwords: { amount: 11, hasNest: false } },
+		{ ...defaultInventory(), cocktailSwords: { amount: 20, hasNest: false } },
+		{ ...defaultInventory(), cocktailSwords: { amount: 10, hasNest: false } },
+		{ ...defaultInventory(), cocktailSwords: { amount: 15, hasNest: false } },
+		{ ...defaultInventory(), cocktailSwords: { amount: 11, hasNest: false } },
+		{ ...defaultInventory(), cocktailSwords: { amount: 12, hasNest: false } },
+	];
+	const G: GameData = {
+		round: 0,
+		host: 2,
+		banquetGoals: [],
+		playerData,
+		supplyTaken: []
+	};
+
+	const result = sortedByCocktailSowrds(G);
+
+	expect(result).toEqual(["1", "3", "5", "0", "4"]);
 });
