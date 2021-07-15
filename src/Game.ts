@@ -98,7 +98,7 @@ export const Rats: Game = {
 				// check the cocktail swords amounts for players who out-do the host are repeated or not
 				const orderRequired = G.playerData.map(inventory => {
 					const currentAmount = inventory.cocktailSwords.amount;
-					return currentAmount > hostAmount && cocktailSwordsAmounts.includes(currentAmount);
+					return currentAmount > hostAmount && cocktailSwordsAmounts.filter(amount => amount === currentAmount).length > 1;
 				}).reduce((acc, curr) => acc || curr, false);
 				return !orderRequired;
 			},
