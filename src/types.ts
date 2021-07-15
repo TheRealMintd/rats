@@ -5,6 +5,7 @@ export interface GameData {
 	host: number;
 	banquetGoals: Array<BanquetGoal>;
 	playerData: PlayerInventory[];
+	cockTailSwordsOrder: Array<string>;
 	supplyTaken: Array<Resource | "none">;
 }
 

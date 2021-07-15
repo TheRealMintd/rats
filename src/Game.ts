@@ -3,7 +3,6 @@ import { TurnOrder } from 'boardgame.io/core';
 
 import type { GameData } from "./types";
 import { addResource, makeDish, makeDecoration, useCocktailSwords, useBaubles, buildNest, useFlowers } from "./moves";
-import { sortedByCocktailSowrds } from "./utils";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -21,6 +20,7 @@ export const Rats: Game = {
 			dishes: [],
 			decorations: [],
 		})),
+		cockTailSwordsOrder: Array.from({length: ctx.numPlayers}, (e, i)=> i.toString()),
 		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
 	}),
 	moves: {
@@ -87,16 +87,27 @@ export const Rats: Game = {
 			},
 			next: 'outDoCocktailSwords'
 		},
+		orderCocktailSwords: {
+			moves: {  },
+			turn: {
+				order: TurnOrder.CUSTOM_FROM("host")
+			},
+			endIf: (G: GameData) => {
+				const hostAmount = G.playerData[G.host].cocktailSwords.amount;
+				const cocktailSwordsAmounts = G.playerData.map(inventory => inventory.cocktailSwords.amount);
+				// check the cocktail swords amounts for players who out-do the host are repeated or not
+				const orderRequired = G.playerData.map(inventory => {
+					const currentAmount = inventory.cocktailSwords.amount;
+					return currentAmount > hostAmount && cocktailSwordsAmounts.includes(currentAmount);
+				}).reduce((acc, curr) => acc || curr, false);
+				return !orderRequired;
+			},
+			next: "outDoCocktailSwords"
+		},
 		outDoCocktailSwords: {
 			next: 'outDoBaubles',
 			turn: {
-				order: {
-					first: () => 0,
-					next: (_, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
-					playOrder: (G: GameData, _: Ctx) => {
-						return sortedByCocktailSowrds(G);
-					}
-				}
+				order: TurnOrder.CUSTOM_FROM("cocktailSwordsOrder")
 			},
 			moves: {  }
 		},
