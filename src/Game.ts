@@ -3,6 +3,7 @@ import { TurnOrder } from 'boardgame.io/core';
 
 import type { GameData } from "./types";
 import { addResource, makeDish, makeDecoration, useCocktailSwords, useBaubles, buildNest, useFlowers } from "./moves";
+import { sortedByCocktailSowrds } from "./utils";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -92,8 +93,8 @@ export const Rats: Game = {
 				order: {
 					first: () => 0,
 					next: (_, ctx) => (ctx.playOrderPos + 1) % ctx.numPlayers,
-					playOrder: (G: GameData, ctx: Ctx) => {
-						return sortedByCocktailSowrds(G, ctx);
+					playOrder: (G: GameData, _: Ctx) => {
+						return sortedByCocktailSowrds(G);
 					}
 				}
 			},
@@ -150,8 +151,3 @@ export const Rats: Game = {
 		}
 	}
 };
-
-// TODO: return a list of playerIDs sorted by number of cocktail swords they have
-function sortedByCocktailSowrds(G: GameData, ctx: Ctx): string[] {
-	return ['0', '1', '2'];
-}
