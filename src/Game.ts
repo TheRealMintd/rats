@@ -33,13 +33,7 @@ export const Rats: Game = {
 		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
 	}),
 	moves: {
-		addResource,
-		makeDish, 
-		makeDecoration, 
-		useCocktailSwords, 
-		useBaubles, 
-		buildNest, 
-		useFlowers
+		addResource
 	},
 	phases: {
 		rollBanquetGoal: {
@@ -118,35 +112,35 @@ export const Rats: Game = {
 			turn: {
 				order: TurnOrder.CUSTOM_FROM("cocktailSwordsOrder")
 			},
-			moves: {  }
+			moves: { useCocktailSwords }
 		},
 		outDoBaubles: {
 			next: 'outDoStraw',
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: {  }
+			moves: { useBaubles }
 		},
 		outDoStraw: {
 			next: 'outDoCrumbs',
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: {  }
+			moves: { buildNest }
 		},
 		outDoCrumbs: {
 			next: 'outDoRags',
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: {  }
+			moves: { makeDish }
 		},
 		outDoRags: {
 			next: 'outDoFlowers',
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: {  }
+			moves: { makeDecoration }
 		},
 		outDoFlowers: {
 			next: 'rollBanquetGoal',
@@ -154,7 +148,7 @@ export const Rats: Game = {
 				// TODO: set active players who out-do host 
 				// TODO: determine the new host
 			},
-			moves: {  }
+			moves: { useFlowers }
 		},
 		calculateResult: {
 			moves: { 
