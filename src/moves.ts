@@ -1,4 +1,5 @@
 import { Ctx } from "boardgame.io";
+import { INVALID_MOVE } from "boardgame.io/core";
 
 import { Craftable, GameData, Resource } from "./types";
 
@@ -77,4 +78,30 @@ export function useFlowers(G: GameData, ctx: Ctx, type: Craftable): void {
 		inventory.flowers.amount
 	);
 	inventory.flowers.amount = 0;
+}
+
+export function verifyCocktailSwordsOrder(
+	G: GameData,
+	ctx: Ctx,
+	playOrder: string[]
+): void | typeof INVALID_MOVE {
+	const ids = playOrder.map((order) => parseInt(order));
+	const valid = ids
+		.map((id, index) => {
+			if (index > 0) {
+				const prevAmount =
+					G.playerData[ids[index - 1]].cocktailSwords.amount;
+				const currentAmount = G.playerData[id].cocktailSwords.amount;
+				if (prevAmount < currentAmount) {
+					return false;
+				}
+				return true;
+			}
+		})
+		.reduce((acc, curr) => acc && curr, true);
+	if (!valid) {
+		return INVALID_MOVE;
+	} else {
+		G.cockTailSwordsOrder = playOrder;
+	}
 }

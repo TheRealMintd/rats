@@ -2,7 +2,16 @@ import type { Ctx, Game } from "boardgame.io";
 import { TurnOrder } from 'boardgame.io/core';
 
 import type { GameData } from "./types";
-import { addResource, makeDish, makeDecoration, useCocktailSwords, useBaubles, buildNest, useFlowers } from "./moves";
+import {
+	addResource,
+	makeDish,
+	makeDecoration,
+	useCocktailSwords,
+	useBaubles,
+	buildNest,
+	useFlowers,
+	verifyCocktailSwordsOrder,
+} from "./moves";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -88,7 +97,7 @@ export const Rats: Game = {
 			next: 'outDoCocktailSwords'
 		},
 		orderCocktailSwords: {
-			moves: {  },
+			moves: { verifyCocktailSwordsOrder },
 			turn: {
 				order: TurnOrder.CUSTOM_FROM("host")
 			},
