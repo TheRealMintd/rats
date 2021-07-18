@@ -1,5 +1,5 @@
 import type { Ctx, Game } from "boardgame.io";
-import { TurnOrder } from 'boardgame.io/core';
+import { TurnOrder, INVALID_MOVE } from 'boardgame.io/core';
 
 import type { GameData } from "./types";
 import {
@@ -20,7 +20,7 @@ export const Rats: Game = {
 	setup: (ctx): GameData => ({
 		round: 0,
 		host: 0, // TODO: create logic to choose the host
-		banquetGoals: [],
+		banquetGoalIndexes: [],
 		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
 			cocktailSwords: { hasNest: false, amount: 0 },
 			baubles: { hasNest: false, amount: 0 },

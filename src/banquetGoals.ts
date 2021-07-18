@@ -60,6 +60,38 @@ export class Cheap extends BanquetGoal {
 }
 
 /**
+ * Class representing the "Composed" banquet goal
+ *
+ * Players will be ranked based on the number of decoration and/or dishes with
+ * matching values. Players without any decoration and/or dishes with matching
+ * values will not be considered for this ranking.
+ */
+export class Composed extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number] => [
+				player,
+				this.totalFreq(inventory.decorations.concat(inventory.dishes)),
+			])
+			.filter(([_, combined]) => combined)
+			.map(([player, combined]) => ({
+				player: player.toString(),
+				value: combined,
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+
+	private totalFreq(initial: number[]): number {
+		return Array.from(new Set(initial))
+			.map((val) => initial.filter((v) => v === val).length)
+			.filter((item) => item > 1)
+			.reduce((a, b) => a + b, 0);
+	}
+}
+
+/**
  * Class representing the "Greedy" banquet goal
  *
  * Players will be ranked based on the value of their largest dish. Players
@@ -78,6 +110,31 @@ export class Greedy extends BanquetGoal {
 			.map(([player, dishes]) => ({
 				player: player.toString(),
 				value: Math.max(...dishes),
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
+
+/**
+ * Class representing the "Refined" banquet goal
+ *
+ * Player will be ranked based on the total value of dishes that
+ * they have made. The player with the highest total dish value wins.
+ * Players without any dishes will not be considered for this ranking.
+ */
+export class Refined extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number] => [
+				player,
+				inventory.dishes.reduce((acc, curr) => acc + curr, 0),
+			])
+			.filter(([_, dishes]) => dishes)
+			.map(([player, dishes]) => ({
+				player: player.toString(),
+				value: dishes,
 			}))
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
@@ -108,25 +165,35 @@ export class Generous extends BanquetGoal {
 }
 
 /**
- * Class representing the "Refined" banquet goal
+ * Class representing the "Plush" banquet goal
  *
- * Player will be ranked based on the total value of dishes that
- * they have made. The player with the highest total dish value wins.
- * Players without any dishes will not be considered for this ranking.
+ * Players will be ranked based on the number of nests.
+ * Players without any nests will not be considered for this ranking.
  */
-export class Refined extends BanquetGoal {
+export class Plush extends BanquetGoal {
+	private static readonly resources: Resource[] = [
+		"cocktailSwords",
+		"baubles",
+		"straw",
+		"crumbs",
+		"rags",
+		"flowers",
+	];
+
 	protected override findInternalScores(
 		playerData: PlayerInventory[]
 	): InternalScore[] {
 		return playerData
 			.map((inventory, player): [number, number] => [
 				player,
-				inventory.dishes.reduce((acc, curr) => acc + curr, 0),
+				Plush.resources
+					.map((resource) => inventory[resource].hasNest)
+					.filter((i) => i).length,
 			])
-			.filter(([_, dishes]) => dishes)
-			.map(([player, dishes]) => ({
+			.filter(([_, numNest]) => numNest)
+			.map(([player, numNest]) => ({
 				player: player.toString(),
-				value: dishes,
+				value: numNest,
 			}))
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
@@ -183,6 +250,30 @@ export class Dapper extends BanquetGoal {
 }
 
 /**
+ * Class representing the "Grandiose" banquet goal
+ *
+ * Players will be ranked based on the value of their largest decoration.
+ * Players without any decoration will not be considered for this ranking.
+ */
+export class Grandiose extends BanquetGoal {
+	protected override findInternalScores(
+		playerData: PlayerInventory[]
+	): InternalScore[] {
+		return playerData
+			.map((inventory, player): [number, number[]] => [
+				player,
+				inventory.decorations,
+			])
+			.filter(([_, decorations]) => decorations.length)
+			.map(([player, decorations]) => ({
+				player: player.toString(),
+				value: Math.max(...decorations),
+			}))
+			.sort(({ value: a }, { value: b }) => b - a);
+	}
+}
+
+/**
  * Class representing the "Elegant" banquet goal
  *
  * Player will be ranked based on the run of dishes/decorations value that
@@ -227,30 +318,6 @@ export class Elegant extends BanquetGoal {
 }
 
 /**
- * Class representing the "Grandiose" banquet goal
- *
- * Players will be ranked based on the value of their largest decoration.
- * Players without any decoration will not be considered for this ranking.
- */
-export class Grandiose extends BanquetGoal {
-	protected override findInternalScores(
-		playerData: PlayerInventory[]
-	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number[]] => [
-				player,
-				inventory.decorations,
-			])
-			.filter(([_, decorations]) => decorations.length)
-			.map(([player, decorations]) => ({
-				player: player.toString(),
-				value: Math.max(...decorations),
-			}))
-			.sort(({ value: a }, { value: b }) => b - a);
-	}
-}
-
-/**
  * Class representing the "Dainty" banquet goal
  *
  * Players will be ranked based on the number of small decoration and dishes.
@@ -277,69 +344,16 @@ export class Dainty extends BanquetGoal {
 	}
 }
 
-/**
- * Class representing the "Composed" banquet goal
- *
- * Players will be ranked based on the number of decoration and/or dishes with
- * matching values. Players without any decoration and/or dishes with matching
- * values will not be considered for this ranking.
- */
-export class Composed extends BanquetGoal {
-	protected override findInternalScores(
-		playerData: PlayerInventory[]
-	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
-				player,
-				this.totalFreq(inventory.decorations.concat(inventory.dishes)),
-			])
-			.filter(([_, combined]) => combined)
-			.map(([player, combined]) => ({
-				player: player.toString(),
-				value: combined,
-			}))
-			.sort(({ value: a }, { value: b }) => b - a);
-	}
-
-	private totalFreq(initial: number[]): number {
-		return Array.from(new Set(initial))
-			.map((val) => initial.filter((v) => v === val).length)
-			.filter((item) => item > 1)
-			.reduce((a, b) => a + b, 0);
-	}
-}
-
-/**
- * Class representing the "Plush" banquet goal
- *
- * Players will be ranked based on the number of nests.
- * Players without any nests will not be considered for this ranking.
- */
-export class Plush extends BanquetGoal {
-	private static readonly resources: Resource[] = [
-		"cocktailSwords",
-		"baubles",
-		"straw",
-		"crumbs",
-		"rags",
-		"flowers",
-	];
-
-	protected override findInternalScores(
-		playerData: PlayerInventory[]
-	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
-				player,
-				Plush.resources
-					.map((resource) => inventory[resource].hasNest)
-					.filter((i) => i).length,
-			])
-			.filter(([_, numNest]) => numNest)
-			.map(([player, numNest]) => ({
-				player: player.toString(),
-				value: numNest,
-			}))
-			.sort(({ value: a }, { value: b }) => b - a);
-	}
-}
+export const banquetGoals: BanquetGoal[] = [
+	new Cheap(),
+	new Composed(),
+	new Greedy(),
+	new Refined(),
+	new Generous(),
+	new Plush(),
+	new Swanky(),
+	new Dapper(),
+	new Grandiose(),
+	new Elegant(),
+	new Dainty(),
+];

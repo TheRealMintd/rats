@@ -3,6 +3,17 @@ import { INVALID_MOVE } from "boardgame.io/core";
 
 import { Craftable, GameData, Resource } from "./types";
 
+export function pickBanquetGoal(
+	G: GameData,
+	_: Ctx,
+	index: number
+): void | typeof INVALID_MOVE {
+	if (G.banquetGoalIndexes.includes(index)) {
+		return INVALID_MOVE;
+	}
+	G.banquetGoalIndexes.push(index);
+}
+
 export function addResource(
 	G: GameData,
 	ctx: Ctx,
