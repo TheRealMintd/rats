@@ -105,3 +105,44 @@ export function verifyCocktailSwordsOrder(
 		G.cockTailSwordsOrder = playOrder;
 	}
 }
+
+/**
+ * Return a list of player IDs who has the most and more flowers than the host,
+ * and are tie with each other.
+ * @param G 
+ * @param _ 
+ * @returns a list of player IDs
+ */
+export function playersTieOnFlowers(G: GameData, _: Ctx): string[] {
+	const maxFlowersAmount = Math.max(
+		...G.playerData
+			.filter(
+				(inventory) =>
+					inventory.flowers.amount >
+					G.playerData[G.host].flowers.amount
+			)
+			.map((inventory) => inventory.flowers.amount)
+	);
+	if (maxFlowersAmount === 0) {
+		return [];
+	}
+	return G.playerData
+		.reduce((acc: string[], curr, index) => {
+			if (curr.flowers.amount === maxFlowersAmount) {
+				acc.push(index.toString());
+			}
+			return acc;
+		}, []);
+}
+
+export function determineHost(
+	G: GameData,
+	ctx: Ctx,
+	host: number
+): void | typeof INVALID_MOVE {
+	if (playersTieOnFlowers(G, ctx).includes(host.toString())) {
+		G.host = host;
+	} else {
+		return INVALID_MOVE;
+	}
+}

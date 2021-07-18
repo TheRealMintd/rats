@@ -11,6 +11,8 @@ import {
 	buildNest,
 	useFlowers,
 	verifyCocktailSwordsOrder,
+	playersTieOnFlowers,
+	determineHost
 } from "./moves";
 
 export const Rats: Game = {
@@ -119,36 +121,75 @@ export const Rats: Game = {
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: { useBaubles }
+			turn: {
+				stages: {
+					useBaubles: {
+						moves: { useBaubles }
+					}
+				}
+			}
 		},
 		outDoStraw: {
 			next: 'outDoCrumbs',
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: { buildNest }
+			turn: {
+				stages: {
+					useStraw: {
+						moves: { buildNest }
+					}
+				}
+			}
 		},
 		outDoCrumbs: {
 			next: 'outDoRags',
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: { makeDish }
+			turn: {
+				stages: {
+					useCrumbs: {
+						moves: { makeDish }
+					}
+				}
+			}
 		},
 		outDoRags: {
 			next: 'outDoFlowers',
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
-			moves: { makeDecoration }
+			turn: {
+				stages: {
+					useRags: {
+						moves: { makeDecoration }
+					}
+				}
+			}
 		},
 		outDoFlowers: {
-			next: 'rollBanquetGoal',
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host 
-				// TODO: determine the new host
+				// TODO: set active players who out-do host
+				// Determine the new host
+				return {
+					next: playersTieOnFlowers(G, ctx).length > 0 ? "determineHost" : "rollBanquetGoal"
+				};
 			},
-			moves: { useFlowers }
+			turn: {
+				stages: {
+					useFlowers: {
+						moves: { useFlowers }
+					}
+				}
+			}
+		},
+		determineHost: {
+			next: "rollBanquetGoal",
+			moves: { determineHost },
+			turn: {
+				order: TurnOrder.CUSTOM_FROM('host') 
+			}
 		},
 		calculateResult: {
 			moves: { 
