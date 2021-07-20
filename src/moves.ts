@@ -2,6 +2,7 @@ import { Ctx } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
 
 import { Craftable, GameData, Resource } from "./types";
+import { banquetGoals } from "./banquetGoals";
 
 export function pickBanquetGoal(
 	G: GameData,
@@ -153,6 +154,70 @@ export function determineHost(
 ): void | typeof INVALID_MOVE {
 	if (playersTieOnFlowers(G, ctx).includes(host.toString())) {
 		G.host = host;
+	} else {
+		return INVALID_MOVE;
+	}
+}
+
+/**
+ * Calculate the score for each player.
+ * The index of the return array represents the player ID,
+ * and the value represents their score.
+ * @param G 
+ * @param ctx 
+ * @returns a list of numbers 
+ */
+export function calculateScores(G: GameData, ctx: Ctx): number[] {
+	const rankings = G.banquetGoalIndexes.map(index => 
+		banquetGoals[index].findWinners(G.playerData)
+	);
+	const scores = new Array<number>(ctx.numPlayers).map((score, index) => {
+		return rankings.map(ranking => {
+			let internalScore = 0;
+			if (ranking.first.includes(index.toString())) {
+				internalScore = 3;
+			} else if (ranking.second.includes(index.toString())) {
+				internalScore = 2;
+			} else if (ranking.third.includes(index.toString())) {
+				internalScore = 1;
+			}
+			return internalScore;
+		}).reduce((acc, curr) => acc + curr, 0);
+	});
+	return scores;
+}
+
+/**
+ * Return a list of strings representing the player ID who 
+ * has the highest score.
+ * @param G 
+ * @param ctx 
+ * @returns a list of strings
+ */
+export function findWinners(G: GameData, ctx: Ctx): string[] {
+	const scores = calculateScores(G, ctx);
+	const highestScore = Math.max(...scores);
+	const winners: string[] = [];
+	scores.forEach((score, index) =>
+		score === highestScore ? winners.push(index.toString()) : winners.push()
+	);
+	return winners;
+}
+
+/**
+ * Verify the winner is one of the winners whose score
+ * is the highest.
+ * @param G 
+ * @param ctx 
+ * @param winner player ID
+ */
+export function verifyWinner(
+	G: GameData,
+	ctx: Ctx,
+	winner: string
+): void | typeof INVALID_MOVE {
+	if (findWinners(G, ctx).includes(winner)) {
+		G.winner = winner;
 	} else {
 		return INVALID_MOVE;
 	}

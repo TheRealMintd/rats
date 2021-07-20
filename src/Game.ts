@@ -1,5 +1,5 @@
 import type { Ctx, Game } from "boardgame.io";
-import { TurnOrder, INVALID_MOVE } from 'boardgame.io/core';
+import { TurnOrder } from 'boardgame.io/core';
 
 import type { GameData } from "./types";
 import {
@@ -12,7 +12,9 @@ import {
 	useFlowers,
 	verifyCocktailSwordsOrder,
 	playersTieOnFlowers,
-	determineHost
+	determineHost,
+	findWinners,
+	verifyWinner
 } from "./moves";
 
 export const Rats: Game = {
@@ -33,6 +35,7 @@ export const Rats: Game = {
 		})),
 		cockTailSwordsOrder: Array.from({length: ctx.numPlayers}, (e, i)=> i.toString()),
 		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
+		winner: "none"
 	}),
 	moves: {
 		addResource
@@ -192,16 +195,19 @@ export const Rats: Game = {
 			}
 		},
 		calculateResult: {
-			moves: { 
-				// TODO: the host decide who is the winner
-			},
+			moves: { verifyWinner },
 			turn: {
 				order: TurnOrder.CUSTOM_FROM('host') 
 			},
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: calculate the score and determine the winner
-				// if there's a tie, then the host will do a move
-				// else the game ends
+				const winners = findWinners(G, ctx);
+				if (winners.length === 1) {
+					G.winner = winners[0];
+					return { winner: G.winner };
+				}
+			},
+			onEnd: (G: GameData, _: Ctx) => {
+				return { winner: G.winner };
 			}
 		}
 	}

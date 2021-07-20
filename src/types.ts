@@ -7,6 +7,7 @@ export interface GameData {
 	playerData: PlayerInventory[];
 	cockTailSwordsOrder: Array<string>;
 	supplyTaken: Array<Resource | "none">;
+	winner: string;
 }
 
 export interface PlayerInventory {
