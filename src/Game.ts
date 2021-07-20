@@ -1,5 +1,5 @@
 import type { Ctx, Game } from "boardgame.io";
-import { TurnOrder } from 'boardgame.io/core';
+import { TurnOrder } from "boardgame.io/core";
 
 import type { GameData } from "./types";
 import {
@@ -44,18 +44,18 @@ export const Rats: Game = {
 		rollBanquetGoal: {
 			moves: {  },
 			turn: {
-				order: TurnOrder.CUSTOM_FROM('host') 
+				order: TurnOrder.CUSTOM_FROM("host") 
 			},
 			endIf: (G: GameData) => {
 				return {
-					next: G.round >= 5 ? 'calculateResult' : 'firstScavenge'
+					next: G.round >= 5 ? "calculateResult" : "firstScavenge"
 				};
 			}
 		},
 		firstScavenge: {
 			moves: {  },
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// ctx.events?.setActivePlayers({all: 'scavenge'});
+				// ctx.events?.setActivePlayers({all: "scavenge"});
 				// TODO: roll dices
 			},
 			turn: {
@@ -67,12 +67,12 @@ export const Rats: Game = {
 					 }
 				}
 			},
-			next: 'secondScavenge'
+			next: "secondScavenge"
 		},
 		secondScavenge: {
 			moves: {  },
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// ctx.events?.setActivePlayers({all: 'scavenge'});
+				// ctx.events?.setActivePlayers({all: "scavenge"});
 				// TODO: roll dices
 			},
 			turn: {
@@ -80,12 +80,12 @@ export const Rats: Game = {
 					scavenge: {  }
 				}
 			},
-			next: 'thirdScavenge'
+			next: "thirdScavenge"
 		},
 		thirdScavenge: {
 			moves: {  },
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// ctx.events.setActivePlayers({all: 'scavenge'});
+				// ctx.events.setActivePlayers({all: "scavenge"});
 				// TODO: roll dices
 			},
 			turn: {
@@ -93,7 +93,7 @@ export const Rats: Game = {
 					scavenge: {  }
 				}
 			},
-			next: 'outDoCocktailSwords'
+			next: "outDoCocktailSwords"
 		},
 		orderCocktailSwords: {
 			moves: { verifyCocktailSwordsOrder },
@@ -113,14 +113,14 @@ export const Rats: Game = {
 			next: "outDoCocktailSwords"
 		},
 		outDoCocktailSwords: {
-			next: 'outDoBaubles',
+			next: "outDoBaubles",
 			turn: {
 				order: TurnOrder.CUSTOM_FROM("cocktailSwordsOrder")
 			},
 			moves: { useCocktailSwords }
 		},
 		outDoBaubles: {
-			next: 'outDoStraw',
+			next: "outDoStraw",
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
@@ -133,7 +133,7 @@ export const Rats: Game = {
 			}
 		},
 		outDoStraw: {
-			next: 'outDoCrumbs',
+			next: "outDoCrumbs",
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
@@ -146,7 +146,7 @@ export const Rats: Game = {
 			}
 		},
 		outDoCrumbs: {
-			next: 'outDoRags',
+			next: "outDoRags",
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
@@ -159,7 +159,7 @@ export const Rats: Game = {
 			}
 		},
 		outDoRags: {
-			next: 'outDoFlowers',
+			next: "outDoFlowers",
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host 
 			},
@@ -191,13 +191,13 @@ export const Rats: Game = {
 			next: "rollBanquetGoal",
 			moves: { determineHost },
 			turn: {
-				order: TurnOrder.CUSTOM_FROM('host') 
+				order: TurnOrder.CUSTOM_FROM("host") 
 			}
 		},
 		calculateResult: {
 			moves: { verifyWinner },
 			turn: {
-				order: TurnOrder.CUSTOM_FROM('host') 
+				order: TurnOrder.CUSTOM_FROM("host") 
 			},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				const winners = findWinners(G, ctx);
