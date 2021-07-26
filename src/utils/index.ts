@@ -16,11 +16,11 @@ export function defaultInventory(): PlayerInventory {
 /**
  * Return a list of player IDs sorted by number of cocktail swords they have
  * and must out-do the cocktail swords amount the host has.
- * 
- * @param G 
+ *
+ * @param G
  * @returns a list of string representing the player ID
  */
-export function sortedByCocktailSowrds(G: GameData): string[] {
+export function sortedByCocktailSwords(G: GameData): string[] {
 	return G.playerData
 		.map((inventory, player) => ({
 			player,
