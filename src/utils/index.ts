@@ -1,6 +1,5 @@
 import { Ctx } from "boardgame.io";
 
-import { rollDice } from "../moves";
 import { GameData, PlayerInventory } from "../types";
 
 export function defaultInventory(): PlayerInventory {
@@ -38,11 +37,19 @@ export function sortedByCocktailSwords(G: GameData): string[] {
 		.map((obj) => obj.player.toString());
 }
 
+export function rollDice(G: GameData, ctx: Ctx): void {
+	if (ctx.random === undefined) {
+		throw new ReferenceError("Ctx.random is undefined");
+	}
+	G.dice1 = ctx.random.D6();
+	G.dice2 = ctx.random.D6();
+}
+
 export function scavengeSetup(G: GameData, ctx: Ctx): void {
 	if (ctx.events?.setActivePlayers === undefined) {
 		throw new ReferenceError("Ctx.EventsAPI.setActivePlayers is undefined");
 	}
 	ctx.events.setActivePlayers({ all: "scavenge" });
-	// Roll dices
+	// Roll dice
 	rollDice(G, ctx);
 }

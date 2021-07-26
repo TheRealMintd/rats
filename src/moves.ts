@@ -223,11 +223,3 @@ export function verifyWinner(
 		return INVALID_MOVE;
 	}
 }
-
-export function rollDice(G: GameData, ctx: Ctx): void {
-	if (ctx.random === undefined) {
-		throw new ReferenceError("Ctx.random is undefined");
-	}
-	G.dice1 = ctx.random.D6();
-	G.dice2 = ctx.random.D6();
-}

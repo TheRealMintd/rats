@@ -16,9 +16,8 @@ import {
 	determineHost,
 	findWinners,
 	verifyWinner,
-	rollDice,
 } from "./moves";
-import { scavengeSetup } from "./utils";
+import { rollDice, scavengeSetup } from "./utils";
 
 export const Rats: Game = {
 	maxPlayers: 6,
