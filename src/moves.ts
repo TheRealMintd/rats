@@ -141,12 +141,9 @@ export function playersTieOnFlowers(G: GameData, _: Ctx): string[] {
 	if (maxFlowersAmount === 0) {
 		return [];
 	}
-	return G.flowers.reduce((acc: string[], curr, index) => {
-		if (curr === maxFlowersAmount) {
-			acc.push(index.toString());
-		}
-		return acc;
-	}, []);
+	return G.flowers.flatMap((count, index) =>
+		count === maxFlowersAmount ? [index.toString()] : []
+	);
 }
 
 export function determineHost(
