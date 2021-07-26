@@ -3,6 +3,7 @@ import { TurnOrder } from "boardgame.io/core";
 
 import type { GameData } from "./types";
 import {
+	pickBanquetGoal,
 	addResource,
 	makeDish,
 	makeDecoration,
@@ -55,7 +56,7 @@ export const Rats: Game = {
 	moves: {},
 	phases: {
 		rollBanquetGoal: {
-			moves: {},
+			moves: { pickBanquetGoal },
 			turn: {
 				order: TurnOrder.CUSTOM_FROM("host"),
 			},
@@ -66,7 +67,6 @@ export const Rats: Game = {
 			},
 		},
 		firstScavenge: {
-			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events?.setActivePlayers({all: "scavenge"});
 				// Roll dices
@@ -82,7 +82,6 @@ export const Rats: Game = {
 			next: "secondScavenge",
 		},
 		secondScavenge: {
-			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events?.setActivePlayers({all: "scavenge"});
 				// Roll dices
@@ -98,7 +97,6 @@ export const Rats: Game = {
 			next: "thirdScavenge",
 		},
 		thirdScavenge: {
-			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events.setActivePlayers({all: "scavenge"});
 				// Roll dices
