@@ -68,19 +68,15 @@ export const Rats: Game = {
 			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events?.setActivePlayers({all: "scavenge"});
-				// TODO: roll dices
-				// ctx.events?.setActivePlayers({all: 'scavenge'});
+				// Roll dices
 				rollDice(G, ctx);
 			},
 			turn: {
 				stages: {
 					scavenge: {
-						moves: {
-							// TODO: make choice based on dices rolled
-							addResource,
-						},
-					},
-				},
+						moves: { addResource }
+					}
+				}
 			},
 			next: "secondScavenge",
 		},
@@ -88,18 +84,15 @@ export const Rats: Game = {
 			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events?.setActivePlayers({all: "scavenge"});
-				// TODO: roll dices
+				// Roll dices
 				rollDice(G, ctx);
 			},
 			turn: {
 				stages: {
 					scavenge: {
-						moves: {
-							// TODO: make choice based on dices rolled
-							addResource,
-						},
-					},
-				},
+						moves: { addResource }
+					}
+				}
 			},
 			next: "thirdScavenge",
 		},
@@ -107,18 +100,15 @@ export const Rats: Game = {
 			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events.setActivePlayers({all: "scavenge"});
-				// TODO: roll dices
+				// Roll dices
 				rollDice(G, ctx);
 			},
 			turn: {
 				stages: {
 					scavenge: {
-						moves: {
-							// TODO: make choice based on dices rolled
-							addResource,
-						},
-					},
-				},
+						moves: { addResource }
+					}
+				}
 			},
 			next: "outDoCocktailSwords",
 		},
