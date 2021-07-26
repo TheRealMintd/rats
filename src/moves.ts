@@ -1,6 +1,5 @@
 import { Ctx } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
-import { Random } from "boardgame.io/dist/types/src/plugins/random/random";
 
 import { Craftable, GameData, Resource } from "./types";
 import { banquetGoals } from "./banquetGoals";
