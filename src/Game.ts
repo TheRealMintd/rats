@@ -52,7 +52,7 @@ export const Rats: Game = {
 		),
 		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
 		flowers: new Array<number>(ctx.numPlayers).fill(0),
-		winner: "none"
+		winner: "none",
 	}),
 	moves: {},
 	phases: {
@@ -94,9 +94,9 @@ export const Rats: Game = {
 			turn: {
 				stages: {
 					scavenge: {
-						moves: { addResource }
-					}
-				}
+						moves: { addResource },
+					},
+				},
 			},
 			next: "secondScavenge",
 		},
@@ -105,9 +105,9 @@ export const Rats: Game = {
 			turn: {
 				stages: {
 					scavenge: {
-						moves: { addResource }
-					}
-				}
+						moves: { addResource },
+					},
+				},
 			},
 			next: "thirdScavenge",
 		},
@@ -116,9 +116,9 @@ export const Rats: Game = {
 			turn: {
 				stages: {
 					scavenge: {
-						moves: { addResource }
-					}
-				}
+						moves: { addResource },
+					},
+				},
 			},
 			next: "outDoCocktailSwords",
 		},
@@ -212,7 +212,9 @@ export const Rats: Game = {
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host
 				// Keep a copy of flowers amount for each player
-				G.flowers = G.playerData.map((inventory) => inventory.flowers.amount);
+				G.flowers = G.playerData.map(
+					(inventory) => inventory.flowers.amount
+				);
 				// Determine the new host
 				return {
 					next:
