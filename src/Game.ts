@@ -18,6 +18,7 @@ import {
 	verifyWinner,
 	rollDice,
 } from "./moves";
+import { scavengeSetup } from "./utils";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -89,11 +90,7 @@ export const Rats: Game = {
 			},
 		},
 		firstScavenge: {
-			onBegin: (G: GameData, ctx: Ctx) => {
-				// ctx.events?.setActivePlayers({all: "scavenge"});
-				// Roll dices
-				rollDice(G, ctx);
-			},
+			onBegin: scavengeSetup,
 			turn: {
 				stages: {
 					scavenge: {
@@ -104,11 +101,7 @@ export const Rats: Game = {
 			next: "secondScavenge",
 		},
 		secondScavenge: {
-			onBegin: (G: GameData, ctx: Ctx) => {
-				// ctx.events?.setActivePlayers({all: "scavenge"});
-				// Roll dices
-				rollDice(G, ctx);
-			},
+			onBegin: scavengeSetup,
 			turn: {
 				stages: {
 					scavenge: {
@@ -119,11 +112,7 @@ export const Rats: Game = {
 			next: "thirdScavenge",
 		},
 		thirdScavenge: {
-			onBegin: (G: GameData, ctx: Ctx) => {
-				// ctx.events.setActivePlayers({all: "scavenge"});
-				// Roll dices
-				rollDice(G, ctx);
-			},
+			onBegin: scavengeSetup,
 			turn: {
 				stages: {
 					scavenge: {
