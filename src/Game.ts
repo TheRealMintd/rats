@@ -56,14 +56,36 @@ export const Rats: Game = {
 	moves: {},
 	phases: {
 		rollBanquetGoal: {
+			start: true,
 			moves: { pickBanquetGoal },
 			turn: {
 				order: TurnOrder.CUSTOM_FROM("host"),
 			},
+			onBegin(G: GameData, ctx: Ctx) {
+				if (ctx.random === undefined) {
+					throw new ReferenceError("Ctx.random is undefined");
+				}
+
+				rollDice(G, ctx);
+				const banquetGoalIndex = G.dice1 + G.dice2 - 2;
+				const alreadyPresent =
+					G.banquetGoalIndexes.find(
+						(index) => index === banquetGoalIndex
+					) === undefined;
+
+				if (alreadyPresent) {
+					G.banquetGoalIndexes.push(banquetGoalIndex);
+				}
+			},
 			endIf: (G: GameData) => {
-				return {
-					next: G.round >= 5 ? "calculateResult" : "firstScavenge",
-				};
+				return G.banquetGoalIndexes.length === G.round + 1
+					? {
+							next:
+								G.round >= 5
+									? "calculateResult"
+									: "firstScavenge",
+					  }
+					: false;
 			},
 		},
 		firstScavenge: {
