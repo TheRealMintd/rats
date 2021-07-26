@@ -28,7 +28,8 @@ export function sortedByCocktailSwords(G: GameData): string[] {
 		}))
 		.filter(
 			(obj) =>
-				obj.cocktailSwords > G.playerData[G.host].cocktailSwords.amount
+				obj.cocktailSwords >
+				G.playerData[G.host[0]].cocktailSwords.amount
 		)
 		.sort(({ cocktailSwords: a }, { cocktailSwords: b }) => b - a)
 		.map((obj) => obj.player.toString());

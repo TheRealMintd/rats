@@ -23,7 +23,7 @@ export const Rats: Game = {
 	maxPlayers: 6,
 	setup: (ctx): GameData => ({
 		round: 0,
-		host: 0, // TODO: create logic to choose the host
+		host: [0], // TODO: create logic to choose the host
 		dice1: 0,
 		dice2: 0,
 		banquetGoalIndexes: [],
@@ -117,7 +117,8 @@ export const Rats: Game = {
 				order: TurnOrder.CUSTOM_FROM("host"),
 			},
 			endIf: (G: GameData) => {
-				const hostAmount = G.playerData[G.host].cocktailSwords.amount;
+				const hostAmount =
+					G.playerData[G.host[0]].cocktailSwords.amount;
 				const cocktailSwordsAmounts = G.playerData.map(
 					(inventory) => inventory.cocktailSwords.amount
 				);

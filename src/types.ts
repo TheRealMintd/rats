@@ -2,7 +2,7 @@ import type { BanquetGoal } from "./banquetGoals";
 
 export interface GameData {
 	round: number;
-	host: number;
+	host: [number];
 	dice1: number;
 	dice2: number;
 	resourceOrder: Resource[];
