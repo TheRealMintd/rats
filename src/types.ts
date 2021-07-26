@@ -3,6 +3,9 @@ import type { BanquetGoal } from "./banquetGoals";
 export interface GameData {
 	round: number;
 	host: number;
+	dice1: number;
+	dice2: number;
+	resourceOrder: Resource[];
 	banquetGoalIndexes: number[];
 	playerData: PlayerInventory[];
 	cockTailSwordsOrder: Array<string>;

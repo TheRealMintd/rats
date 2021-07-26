@@ -14,7 +14,8 @@ import {
 	playersTieOnFlowers,
 	determineHost,
 	findWinners,
-	verifyWinner
+	verifyWinner,
+	rollDice,
 } from "./moves";
 
 export const Rats: Game = {
@@ -22,7 +23,18 @@ export const Rats: Game = {
 	setup: (ctx): GameData => ({
 		round: 0,
 		host: 0, // TODO: create logic to choose the host
+		dice1: 0,
+		dice2: 0,
 		banquetGoalIndexes: [],
+		resourceOrder: [
+			"cocktailSwords",
+			"baubles",
+			"straw",
+			"crumbs",
+			"straw",
+			"rags",
+			"flowers",
+		],
 		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
 			cocktailSwords: { hasNest: false, amount: 0 },
 			baubles: { hasNest: false, amount: 0 },
@@ -33,171 +45,189 @@ export const Rats: Game = {
 			dishes: [],
 			decorations: [],
 		})),
-		cockTailSwordsOrder: Array.from({length: ctx.numPlayers}, (e, i)=> i.toString()),
+		cockTailSwordsOrder: Array.from({ length: ctx.numPlayers }, (e, i) =>
+			i.toString()
+		),
 		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
-		winner: "none"
+		winner: "none",
 	}),
 	moves: {
-		addResource
+		addResource,
 	},
 	phases: {
 		rollBanquetGoal: {
-			moves: {  },
+			moves: {},
 			turn: {
-				order: TurnOrder.CUSTOM_FROM("host") 
+				order: TurnOrder.CUSTOM_FROM("host"),
 			},
 			endIf: (G: GameData) => {
 				return {
-					next: G.round >= 5 ? "calculateResult" : "firstScavenge"
+					next: G.round >= 5 ? "calculateResult" : "firstScavenge",
 				};
-			}
+			},
 		},
 		firstScavenge: {
-			moves: {  },
+			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events?.setActivePlayers({all: "scavenge"});
 				// TODO: roll dices
+				// ctx.events?.setActivePlayers({all: 'scavenge'});
+				rollDice(G, ctx);
 			},
 			turn: {
 				stages: {
-					scavenge: { 
+					scavenge: {
 						moves: {
 							// TODO: make choice based on dices rolled
-						}
-					 }
-				}
+						},
+					},
+				},
 			},
-			next: "secondScavenge"
+			next: "secondScavenge",
 		},
 		secondScavenge: {
-			moves: {  },
+			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events?.setActivePlayers({all: "scavenge"});
 				// TODO: roll dices
+				rollDice(G, ctx);
 			},
 			turn: {
 				stages: {
-					scavenge: {  }
-				}
+					scavenge: {},
+				},
 			},
-			next: "thirdScavenge"
+			next: "thirdScavenge",
 		},
 		thirdScavenge: {
-			moves: {  },
+			moves: {},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// ctx.events.setActivePlayers({all: "scavenge"});
 				// TODO: roll dices
+				rollDice(G, ctx);
 			},
 			turn: {
 				stages: {
-					scavenge: {  }
-				}
+					scavenge: {},
+				},
 			},
-			next: "outDoCocktailSwords"
+			next: "outDoCocktailSwords",
 		},
 		orderCocktailSwords: {
 			moves: { verifyCocktailSwordsOrder },
 			turn: {
-				order: TurnOrder.CUSTOM_FROM("host")
+				order: TurnOrder.CUSTOM_FROM("host"),
 			},
 			endIf: (G: GameData) => {
 				const hostAmount = G.playerData[G.host].cocktailSwords.amount;
-				const cocktailSwordsAmounts = G.playerData.map(inventory => inventory.cocktailSwords.amount);
+				const cocktailSwordsAmounts = G.playerData.map(
+					(inventory) => inventory.cocktailSwords.amount
+				);
 				// check the cocktail swords amounts for players who out-do the host are repeated or not
-				const orderRequired = G.playerData.map(inventory => {
-					const currentAmount = inventory.cocktailSwords.amount;
-					return currentAmount > hostAmount && cocktailSwordsAmounts.filter(amount => amount === currentAmount).length > 1;
-				}).reduce((acc, curr) => acc || curr, false);
+				const orderRequired = G.playerData
+					.map((inventory) => {
+						const currentAmount = inventory.cocktailSwords.amount;
+						return (
+							currentAmount > hostAmount &&
+							cocktailSwordsAmounts.filter(
+								(amount) => amount === currentAmount
+							).length > 1
+						);
+					})
+					.reduce((acc, curr) => acc || curr, false);
 				return !orderRequired;
 			},
-			next: "outDoCocktailSwords"
+			next: "outDoCocktailSwords",
 		},
 		outDoCocktailSwords: {
 			next: "outDoBaubles",
 			turn: {
-				order: TurnOrder.CUSTOM_FROM("cocktailSwordsOrder")
+				order: TurnOrder.CUSTOM_FROM("cocktailSwordsOrder"),
 			},
-			moves: { useCocktailSwords }
+			moves: { useCocktailSwords },
 		},
 		outDoBaubles: {
 			next: "outDoStraw",
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host 
+				// TODO: set active players who out-do host
 			},
 			turn: {
 				stages: {
 					useBaubles: {
-						moves: { useBaubles }
-					}
-				}
-			}
+						moves: { useBaubles },
+					},
+				},
+			},
 		},
 		outDoStraw: {
 			next: "outDoCrumbs",
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host 
+				// TODO: set active players who out-do host
 			},
 			turn: {
 				stages: {
 					useStraw: {
-						moves: { buildNest }
-					}
-				}
-			}
+						moves: { buildNest },
+					},
+				},
+			},
 		},
 		outDoCrumbs: {
 			next: "outDoRags",
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host 
+				// TODO: set active players who out-do host
 			},
 			turn: {
 				stages: {
 					useCrumbs: {
-						moves: { makeDish }
-					}
-				}
-			}
+						moves: { makeDish },
+					},
+				},
+			},
 		},
 		outDoRags: {
 			next: "outDoFlowers",
 			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host 
+				// TODO: set active players who out-do host
 			},
 			turn: {
 				stages: {
 					useRags: {
-						moves: { makeDecoration }
-					}
-				}
-			}
+						moves: { makeDecoration },
+					},
+				},
+			},
 		},
 		outDoFlowers: {
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host
 				// Determine the new host
 				return {
-					next: playersTieOnFlowers(G, ctx).length > 0 ? "determineHost" : "rollBanquetGoal"
+					next:
+						playersTieOnFlowers(G, ctx).length > 0
+							? "determineHost"
+							: "rollBanquetGoal",
 				};
 			},
 			turn: {
 				stages: {
 					useFlowers: {
-						moves: { useFlowers }
-					}
-				}
-			}
+						moves: { useFlowers },
+					},
+				},
+			},
 		},
 		determineHost: {
 			next: "rollBanquetGoal",
 			moves: { determineHost },
 			turn: {
-				order: TurnOrder.CUSTOM_FROM("host") 
-			}
+				order: TurnOrder.CUSTOM_FROM("host"),
+			},
 		},
 		calculateResult: {
 			moves: { verifyWinner },
 			turn: {
-				order: TurnOrder.CUSTOM_FROM("host") 
+				order: TurnOrder.CUSTOM_FROM("host"),
 			},
 			onBegin: (G: GameData, ctx: Ctx) => {
 				const winners = findWinners(G, ctx);
@@ -208,7 +238,7 @@ export const Rats: Game = {
 			},
 			onEnd: (G: GameData, _: Ctx) => {
 				return { winner: G.winner };
-			}
-		}
-	}
+			},
+		},
+	},
 };

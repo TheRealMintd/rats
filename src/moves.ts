@@ -1,5 +1,6 @@
 import { Ctx } from "boardgame.io";
 import { INVALID_MOVE } from "boardgame.io/core";
+import { Random } from "boardgame.io/dist/types/src/plugins/random/random";
 
 import { Craftable, GameData, Resource } from "./types";
 import { banquetGoals } from "./banquetGoals";
@@ -20,7 +21,16 @@ export function addResource(
 	ctx: Ctx,
 	resource: Resource,
 	amount: number
-): void {
+): void | typeof INVALID_MOVE {
+	//get the validity of dice
+	const resourceIndex = G.resourceOrder.findIndex((re) => re === resource);
+	const valid =
+		(G.dice1 === amount && G.dice2 === resourceIndex) ||
+		(G.dice2 === amount && G.dice1 === resourceIndex);
+	if (valid === false) {
+		return INVALID_MOVE;
+	}
+
 	const targetResource = G.playerData[parseInt(ctx.currentPlayer)][resource];
 	targetResource.amount += targetResource.hasNest ? amount * 2 : amount;
 }
@@ -121,8 +131,8 @@ export function verifyCocktailSwordsOrder(
 /**
  * Return a list of player IDs who has the most and more flowers than the host,
  * and are tie with each other.
- * @param G 
- * @param _ 
+ * @param G
+ * @param _
  * @returns a list of player IDs
  */
 export function playersTieOnFlowers(G: GameData, _: Ctx): string[] {
@@ -138,13 +148,12 @@ export function playersTieOnFlowers(G: GameData, _: Ctx): string[] {
 	if (maxFlowersAmount === 0) {
 		return [];
 	}
-	return G.playerData
-		.reduce((acc: string[], curr, index) => {
-			if (curr.flowers.amount === maxFlowersAmount) {
-				acc.push(index.toString());
-			}
-			return acc;
-		}, []);
+	return G.playerData.reduce((acc: string[], curr, index) => {
+		if (curr.flowers.amount === maxFlowersAmount) {
+			acc.push(index.toString());
+		}
+		return acc;
+	}, []);
 }
 
 export function determineHost(
@@ -163,35 +172,37 @@ export function determineHost(
  * Calculate the score for each player.
  * The index of the return array represents the player ID,
  * and the value represents their score.
- * @param G 
- * @param ctx 
- * @returns a list of numbers 
+ * @param G
+ * @param ctx
+ * @returns a list of numbers
  */
 export function calculateScores(G: GameData, ctx: Ctx): number[] {
-	const rankings = G.banquetGoalIndexes.map(index => 
+	const rankings = G.banquetGoalIndexes.map((index) =>
 		banquetGoals[index].findWinners(G.playerData)
 	);
 	const scores = new Array<number>(ctx.numPlayers).map((score, index) => {
-		return rankings.map(ranking => {
-			let internalScore = 0;
-			if (ranking.first.includes(index.toString())) {
-				internalScore = 3;
-			} else if (ranking.second.includes(index.toString())) {
-				internalScore = 2;
-			} else if (ranking.third.includes(index.toString())) {
-				internalScore = 1;
-			}
-			return internalScore;
-		}).reduce((acc, curr) => acc + curr, 0);
+		return rankings
+			.map((ranking) => {
+				let internalScore = 0;
+				if (ranking.first.includes(index.toString())) {
+					internalScore = 3;
+				} else if (ranking.second.includes(index.toString())) {
+					internalScore = 2;
+				} else if (ranking.third.includes(index.toString())) {
+					internalScore = 1;
+				}
+				return internalScore;
+			})
+			.reduce((acc, curr) => acc + curr, 0);
 	});
 	return scores;
 }
 
 /**
- * Return a list of strings representing the player ID who 
+ * Return a list of strings representing the player ID who
  * has the highest score.
- * @param G 
- * @param ctx 
+ * @param G
+ * @param ctx
  * @returns a list of strings
  */
 export function findWinners(G: GameData, ctx: Ctx): string[] {
@@ -207,8 +218,8 @@ export function findWinners(G: GameData, ctx: Ctx): string[] {
 /**
  * Verify the winner is one of the winners whose score
  * is the highest.
- * @param G 
- * @param ctx 
+ * @param G
+ * @param ctx
  * @param winner player ID
  */
 export function verifyWinner(
@@ -221,4 +232,11 @@ export function verifyWinner(
 	} else {
 		return INVALID_MOVE;
 	}
+}
+export function rollDice(G: GameData, ctx: Ctx): void {
+	//G.dice1=parseInt(ctx._random.D6());
+	//G.dice2=ctx.random?.Die(6);
+	//G.dice1=ctx.random?.D6();
+	G.dice1 = Math.floor(Math.random() * 6) + 1;
+	G.dice2 = Math.floor(Math.random() * 6) + 1;
 }
