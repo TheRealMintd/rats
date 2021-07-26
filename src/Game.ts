@@ -78,14 +78,14 @@ export const Rats: Game = {
 				}
 			},
 			endIf: (G: GameData) => {
-				return G.banquetGoalIndexes.length === G.round + 1
-					? {
-							next:
-								G.round >= 5
-									? "calculateResult"
-									: "firstScavenge",
-					  }
-					: false;
+				if (G.banquetGoalIndexes.length === G.round + 1) {
+					return {
+						next:
+							G.round >= 5 ? "calculateResult" : "firstScavenge",
+					};
+				} else {
+					return false;
+				}
 			},
 		},
 		firstScavenge: {
