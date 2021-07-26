@@ -227,10 +227,11 @@ export function verifyWinner(
 		return INVALID_MOVE;
 	}
 }
+
 export function rollDice(G: GameData, ctx: Ctx): void {
-	//G.dice1=parseInt(ctx._random.D6());
-	//G.dice2=ctx.random?.Die(6);
-	//G.dice1=ctx.random?.D6();
-	G.dice1 = Math.floor(Math.random() * 6) + 1;
-	G.dice2 = Math.floor(Math.random() * 6) + 1;
+	if (ctx.random === undefined) {
+		throw new ReferenceError("Ctx.random is undefined");
+	}
+	G.dice1 = ctx.random.D6();
+	G.dice2 = ctx.random.D6();
 }
