@@ -51,9 +51,7 @@ export const Rats: Game = {
 		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
 		winner: "none",
 	}),
-	moves: {
-		addResource,
-	},
+	moves: {},
 	phases: {
 		rollBanquetGoal: {
 			moves: {},
@@ -79,6 +77,7 @@ export const Rats: Game = {
 					scavenge: {
 						moves: {
 							// TODO: make choice based on dices rolled
+							addResource,
 						},
 					},
 				},
@@ -94,7 +93,12 @@ export const Rats: Game = {
 			},
 			turn: {
 				stages: {
-					scavenge: {},
+					scavenge: {
+						moves: {
+							// TODO: make choice based on dices rolled
+							addResource,
+						},
+					},
 				},
 			},
 			next: "thirdScavenge",
@@ -108,7 +112,12 @@ export const Rats: Game = {
 			},
 			turn: {
 				stages: {
-					scavenge: {},
+					scavenge: {
+						moves: {
+							// TODO: make choice based on dices rolled
+							addResource,
+						},
+					},
 				},
 			},
 			next: "outDoCocktailSwords",
