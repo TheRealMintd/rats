@@ -49,7 +49,8 @@ export const Rats: Game = {
 			i.toString()
 		),
 		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
-		winner: "none",
+		flowers: new Array<number>(ctx.numPlayers).fill(0),
+		winner: "none"
 	}),
 	moves: {},
 	phases: {
@@ -200,6 +201,8 @@ export const Rats: Game = {
 		outDoFlowers: {
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host
+				// Keep a copy of flowers amount for each player
+				G.flowers = G.playerData.map((inventory) => inventory.flowers.amount);
 				// Determine the new host
 				return {
 					next:

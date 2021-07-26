@@ -137,19 +137,13 @@ export function verifyCocktailSwordsOrder(
  */
 export function playersTieOnFlowers(G: GameData, _: Ctx): string[] {
 	const maxFlowersAmount = Math.max(
-		...G.playerData
-			.filter(
-				(inventory) =>
-					inventory.flowers.amount >
-					G.playerData[G.host].flowers.amount
-			)
-			.map((inventory) => inventory.flowers.amount)
+		...G.flowers.filter((amount) => amount > G.flowers[G.host])
 	);
 	if (maxFlowersAmount === 0) {
 		return [];
 	}
-	return G.playerData.reduce((acc: string[], curr, index) => {
-		if (curr.flowers.amount === maxFlowersAmount) {
+	return G.flowers.reduce((acc: string[], curr, index) => {
+		if (curr === maxFlowersAmount) {
 			acc.push(index.toString());
 		}
 		return acc;

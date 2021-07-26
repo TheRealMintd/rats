@@ -10,6 +10,7 @@ export interface GameData {
 	playerData: PlayerInventory[];
 	cockTailSwordsOrder: Array<string>;
 	supplyTaken: Array<Resource | "none">;
+	flowers: Array<number>;
 	winner: string;
 }
 
