@@ -68,12 +68,12 @@ export const Rats: Game = {
 
 				rollDice(G, ctx);
 				const banquetGoalIndex = G.dice1 + G.dice2 - 2;
-				const alreadyPresent =
+				const notPresent =
 					G.banquetGoalIndexes.find(
 						(index) => index === banquetGoalIndex
 					) === undefined;
 
-				if (alreadyPresent) {
+				if (notPresent) {
 					G.banquetGoalIndexes.push(banquetGoalIndex);
 				}
 			},
