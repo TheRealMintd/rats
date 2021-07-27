@@ -22,11 +22,13 @@ export function addResource(
 	amount: number
 ): void | typeof INVALID_MOVE {
 	//get the validity of dice
-	const resourceIndex = G.resourceOrder.findIndex((re) => re === resource);
+	const resourceIndex =
+		G.resourceOrder.findIndex((re) => re === resource) + 1;
 	const valid =
+		(G.dice1 === G.dice2 && G.dice1 === amount) ||
 		(G.dice1 === amount && G.dice2 === resourceIndex) ||
 		(G.dice2 === amount && G.dice1 === resourceIndex);
-	if (valid === false) {
+	if (!valid) {
 		return INVALID_MOVE;
 	}
 
