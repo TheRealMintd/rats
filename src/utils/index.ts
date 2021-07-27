@@ -1,6 +1,6 @@
 import { Ctx } from "boardgame.io";
 
-import { GameData, PlayerInventory } from "../types";
+import { GameData, PlayerInventory, Resource } from "../types";
 
 export function defaultInventory(): PlayerInventory {
 	return {
@@ -52,4 +52,36 @@ export function scavengeSetup(G: GameData, ctx: Ctx): void {
 	ctx.events.setActivePlayers({ all: "scavenge" });
 	// Roll dice
 	rollDice(G, ctx);
+}
+
+export function findPlayersWhoOutdoHost(G: GameData, item: Resource): string[] {
+	const hostAmount = G.playerData[parseInt(G.host[0])][item].amount;
+	return G.playerData.flatMap(({ [item]: { amount } }, index) =>
+		G.host[0] === index.toString() || amount > hostAmount
+			? []
+			: [index.toString()]
+	);
+}
+
+export function setStageForOutdoers(
+	G: GameData,
+	ctx: Ctx,
+	item: Resource,
+	stageName: string
+): void {
+	if (ctx.events?.setActivePlayers === undefined) {
+		throw new ReferenceError("Ctx.EventsAPI.setActivePlayers is undefined");
+	}
+
+	const active = findPlayersWhoOutdoHost(G, "baubles").map((player) => [
+		player,
+		stageName,
+	]);
+
+	ctx.events.setActivePlayers({
+		value: active.length
+			? (Object.fromEntries(active) as unknown)
+			: { value: { [G.host[0]]: stageName } },
+		moveLimit: 1,
+	});
 }

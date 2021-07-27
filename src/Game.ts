@@ -17,7 +17,7 @@ import {
 	findWinners,
 	verifyWinner,
 } from "./moves";
-import { rollDice, scavengeSetup } from "./utils";
+import { rollDice, scavengeSetup, setStageForOutdoers } from "./utils";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -145,9 +145,8 @@ export const Rats: Game = {
 		},
 		outDoBaubles: {
 			next: "outDoStraw",
-			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host
-			},
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "baubles", "useBaubles"),
 			turn: {
 				stages: {
 					useBaubles: {
@@ -158,9 +157,8 @@ export const Rats: Game = {
 		},
 		outDoStraw: {
 			next: "outDoCrumbs",
-			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host
-			},
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "straw", "useStraw"),
 			turn: {
 				stages: {
 					useStraw: {
@@ -171,9 +169,8 @@ export const Rats: Game = {
 		},
 		outDoCrumbs: {
 			next: "outDoRags",
-			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host
-			},
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "crumbs", "useCrumbs"),
 			turn: {
 				stages: {
 					useCrumbs: {
@@ -184,9 +181,8 @@ export const Rats: Game = {
 		},
 		outDoRags: {
 			next: "outDoFlowers",
-			onBegin: (G: GameData, ctx: Ctx) => {
-				// TODO: set active players who out-do host
-			},
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "rags", "useRags"),
 			turn: {
 				stages: {
 					useRags: {
@@ -223,6 +219,7 @@ export const Rats: Game = {
 			moves: { determineHost },
 			turn: {
 				order: TurnOrder.CUSTOM_FROM("host"),
+				moveLimit: 1,
 			},
 		},
 		calculateResult: {
