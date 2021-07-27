@@ -3,7 +3,6 @@ export interface GameData {
 	host: [string];
 	dice1: number;
 	dice2: number;
-	resourceOrder: Resource[];
 	banquetGoalIndexes: number[];
 	playerData: PlayerInventory[];
 	cockTailSwordsOrder: Array<string>;

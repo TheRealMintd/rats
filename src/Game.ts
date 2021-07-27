@@ -27,15 +27,6 @@ export const Rats: Game = {
 		dice1: 0,
 		dice2: 0,
 		banquetGoalIndexes: [],
-		resourceOrder: [
-			"cocktailSwords",
-			"baubles",
-			"straw",
-			"crumbs",
-			"straw",
-			"rags",
-			"flowers",
-		],
 		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
 			cocktailSwords: { hasNest: false, amount: 0 },
 			baubles: { hasNest: false, amount: 0 },

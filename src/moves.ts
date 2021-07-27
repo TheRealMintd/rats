@@ -4,6 +4,15 @@ import { INVALID_MOVE } from "boardgame.io/core";
 import { Craftable, GameData, Resource } from "./types";
 import { banquetGoals } from "./banquetGoals";
 
+const RESOURCE_ORDER = [
+	"cocktailSwords",
+	"baubles",
+	"straw",
+	"crumbs",
+	"rags",
+	"flowers",
+];
+
 export function pickBanquetGoal(
 	G: GameData,
 	_: Ctx,
@@ -23,7 +32,7 @@ export function addResource(
 ): void | typeof INVALID_MOVE {
 	//get the validity of dice
 	const resourceIndex =
-		G.resourceOrder.findIndex((re) => re === resource) + 1;
+		RESOURCE_ORDER.findIndex((item) => item === resource) + 1;
 	const valid =
 		(G.dice1 === G.dice2 && G.dice1 === amount) ||
 		(G.dice1 === amount && G.dice2 === resourceIndex) ||
