@@ -53,7 +53,6 @@ export const Rats: Game = {
 		flowers: new Array<number>(ctx.numPlayers).fill(0),
 		winner: "none",
 	}),
-	moves: {},
 	phases: {
 		rollBanquetGoal: {
 			start: true,
