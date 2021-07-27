@@ -116,7 +116,7 @@ export const Rats: Game = {
 					},
 				},
 			},
-			next: "outDoCocktailSwords",
+			next: "orderCocktailSwords",
 		},
 		orderCocktailSwords: {
 			moves: { verifyCocktailSwordsOrder },
