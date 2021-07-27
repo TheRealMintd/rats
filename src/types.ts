@@ -1,5 +1,3 @@
-import type { BanquetGoal } from "./banquetGoals";
-
 export interface GameData {
 	round: number;
 	host: [string];
