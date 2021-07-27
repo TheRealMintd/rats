@@ -248,7 +248,7 @@ it("correctly calculates the play order for 'outDoCocktailSwords' phase", () => 
 	];
 	const G = {
 		round: 0,
-		host: 2,
+		host: ["2"],
 		playerData,
 		supplyTaken: [],
 	} as unknown as GameData;

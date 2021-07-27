@@ -138,7 +138,7 @@ export function verifyCocktailSwordsOrder(
  */
 export function playersTieOnFlowers(G: GameData, _: Ctx): string[] {
 	const maxFlowersAmount = Math.max(
-		...G.flowers.filter((amount) => amount > G.flowers[G.host[0]])
+		...G.flowers.filter((amount) => amount > G.flowers[parseInt(G.host[0])])
 	);
 	if (maxFlowersAmount === 0) {
 		return [];
@@ -154,7 +154,7 @@ export function determineHost(
 	host: number
 ): void | typeof INVALID_MOVE {
 	if (playersTieOnFlowers(G, ctx).includes(host.toString())) {
-		G.host = [host];
+		G.host = [host.toString()];
 	} else {
 		return INVALID_MOVE;
 	}
