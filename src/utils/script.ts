@@ -11,11 +11,11 @@ const dice = document.querySelectorAll('img');
 
 export function roll(): void {
     dice.forEach(function(die) {
-        die?.classList.add('shake');
+        die.classList.add('shake');
     });
     setTimeout(function() {
         dice.forEach(function(die) {
-            die?.classList.remove('shake');
+            die.classList.remove('shake');
         });
         const dieOneValue: number = Math.floor(Math.random() * 6);
         const dieTwoValue: number = Math.floor(Math.random() * 6);
