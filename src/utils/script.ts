@@ -7,10 +7,7 @@ const images = [
     '/dice-6.png'
 ];
 
-const dice = [
-    document.querySelector('#die-1'),
-    document.querySelector('#die-2')
-];
+const dice = document.querySelectorAll('img');
 
 export function roll(): void {
     dice.forEach(function(die) {
