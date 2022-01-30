@@ -1,3 +1,7 @@
+import { ReactElement } from "react";
+
+import '../styles/board.css';
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 const images = [
     '/dice-1.png', 
@@ -10,7 +14,7 @@ const images = [
 
 const dice = document.querySelectorAll('img');
 
-export function roll(): void {
+export const roll = (): void => {
     dice.forEach(function(die) {
         die.classList.add('shake');
     });
@@ -27,4 +31,19 @@ export function roll(): void {
     },
     1000
     );
-}
+};
+
+export const BanquetGoalBoard = (): ReactElement => {
+    return (
+        <div className='board'>
+            <div className='dice-container'>
+                <div className='dice-wrapper'>
+                    <img className='dice-img' src='/dice-1.png' id='die-1'/>
+                    <img className='dice-img' src='/dice-2.png' id='die-2'/>
+                </div>
+                <p className='msg' id='total'></p>
+                <button className='button-19' role='button' onClick={() => roll()}>Roll Banquet Goal</button>
+            </div>
+        </div>
+    );
+};
