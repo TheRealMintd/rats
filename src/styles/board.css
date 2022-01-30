@@ -1,0 +1,102 @@
+.board {
+  padding: 10px;
+  background: linear-gradient(
+    #ff6e6a,
+    #e92e34,
+    #ff6e6a
+  );
+  background-size: 100%;
+  height: 100vh;
+}
+
+.dice-container {
+  width: 400px;
+  padding: 50px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 15px 35px rgba(50, 50, 50, 0.2);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dice-wrapper {
+	width: 90%;
+	display: flex;
+	justify-content: space-around;
+}
+
+.dice-img {
+	width: 100px;
+	filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(320deg) brightness(95%) contrast(90%);
+}
+
+.msg {
+	font-size: 16px;
+	margin: 30px 0;
+	font-weight: 500;
+	font-family: din-round, sans-serif;
+	letter-spacing: 0.8px;
+}
+
+.button-19 {
+	appearance: button;
+	background-color: #d61818;
+	border: solid transparent;
+	border-radius: 16px;
+	border-width: 0 0 4px;
+	box-sizing: border-box;
+	color: #ffffff;
+	cursor: pointer;
+	display: inline-block;
+	font-family: din-round, sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.8px;
+	line-height: 20px;
+	margin: 0;
+	outline: none;
+	overflow: visible;
+	padding: 13px 16px;
+	text-align: center;
+	text-transform: uppercase;
+	touch-action: manipulation;
+	transform: translateZ(0);
+	transition: filter 0.2s;
+	user-select: none;
+	-webkit-user-select: none;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+.button-19:after {
+	background-clip: padding-box;
+	background-color: #f61c1c;
+	border: solid transparent;
+	border-radius: 16px;
+	border-width: 0 0 4px;
+	bottom: -4px;
+	content: "";
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: -1;
+}
+
+.button-19:main,
+.button-19:focus {
+	user-select: auto;
+}
+
+.button-19:hover:not(:disabled) {
+	filter: brightness(1.1);
+}
+
+.button-19:disabled {
+	cursor: auto;
+}

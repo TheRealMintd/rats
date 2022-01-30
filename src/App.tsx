@@ -1,8 +1,8 @@
 import { Client } from "boardgame.io/react";
 
 import { Rats } from "./Game";
+import { Board } from "./Board";
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const App = Client({ game: Rats });
+const App = Client({ game: Rats, board: Board });
 
 export default App;
