@@ -20,7 +20,6 @@ export const Board = ({G, ctx, moves}: RatsProps): ReactElement => {
                 <p className='msg' id='total'></p>
                 <button className='button-19' role='button' onClick={() => roll()}>Roll Banquet Goal</button>
             </div>
-            <script src='./utils/script.ts'></script>
         </div>
     );
 };
