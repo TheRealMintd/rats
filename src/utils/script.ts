@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const images = [
     '/dice-1.png', 
     '/dice-2.png', 
