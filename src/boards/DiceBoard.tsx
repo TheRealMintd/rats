@@ -35,15 +35,13 @@ export const roll = (): void => {
 
 export const DiceBoard = (): ReactElement => {
     return (
-        <div className='board'>
-            <div className='dice-container'>
-                <div className='dice-wrapper'>
-                    <img className='dice-img' src='/dice-1.png' id='die-1'/>
-                    <img className='dice-img' src='/dice-2.png' id='die-2'/>
-                </div>
-                <p className='msg' id='total'></p>
-                <button className='button-19' role='button' onClick={() => roll()}>Roll Banquet Goal</button>
+        <div className='dice-container'>
+            <div className='dice-wrapper'>
+                <img className='dice-img' src='/dice-1.png' id='die-1'/>
+                <img className='dice-img' src='/dice-2.png' id='die-2'/>
             </div>
+            <p className='msg' id='total'></p>
+            <button className='button-19' role='button' onClick={() => roll()}>Roll Banquet Goal</button>
         </div>
     );
 };
