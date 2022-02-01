@@ -3,7 +3,6 @@ import { ReactElement } from "react";
 import '../styles/board.css';
 import { banquetGoals } from './BanquetBoard';
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const images = [
     '/dice-1.png', 
     '/dice-2.png', 
@@ -31,6 +30,7 @@ export const roll = (): void => {
         const total: number = dieOneValue + 1 + dieTwoValue + 1;
         document.querySelector('#die-1')?.setAttribute('src', images[dieOneValue]);
         document.querySelector('#die-2')?.setAttribute('src', images[dieTwoValue]);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         document.querySelector('#total')!.innerHTML = 'The banquet goal is ' + total.toString();
         document.querySelector(banquetGoals[total - 2])?.classList.add('shadow');
     },
