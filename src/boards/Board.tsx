@@ -12,7 +12,9 @@ export const Board = ({G, ctx, moves}: RatsProps): ReactElement => {
 
     return (
         <div className='board'>
-            <BanquetBoard />
+            <div className='row'>
+                <BanquetBoard />
+            </div>
             <DiceBoard />
         </div>
     );
