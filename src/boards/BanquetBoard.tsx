@@ -1,4 +1,3 @@
-import type { BoardProps } from 'boardgame.io/react';
 import { ReactElement } from 'react';
 
 import '../styles/board.css';
