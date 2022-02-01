@@ -13,7 +13,7 @@ export const Board = ({G, ctx, moves}: RatsProps): ReactElement => {
     return (
         <div className='board'>
             <h1 className='title margin-btm-0'>RATS</h1>
-            <h2 className='title margin-top-0'>HIGH TES AT SEA</h2>
+            <h2 className='title margin-top-0'>HIGH TEA AT SEA</h2>
             <div className='row'>
                 <BanquetBoard />
             </div>
