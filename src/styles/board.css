@@ -1,9 +1,10 @@
 .board {
 	padding: 10px;
 	background: linear-gradient(
-		#ff6e6a,
-		#e92e34,
-		#ff6e6a
+		354deg, 
+		rgba(2,0,36,1) 11%, 
+		rgba(9,9,121,1) 33%, 
+		rgba(0,212,255,1) 100%
 	);
 	background-size: 100%;
 	height: 100%;
@@ -70,7 +71,6 @@
 
 .dice-img {
 	width: 100px;
-	filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(320deg) brightness(95%) contrast(90%);
 }
 
 .shake {
@@ -98,7 +98,7 @@
 
 .button-19 {
 	appearance: button;
-	background-color: #d61818;
+	background-color: #1874d6;
 	border: solid transparent;
 	border-radius: 16px;
 	border-width: 0 0 4px;
@@ -128,7 +128,7 @@
 
 .button-19:after {
 	background-clip: padding-box;
-	background-color: #f61c1c;
+	background-color: #1cc3f6;
 	border: solid transparent;
 	border-radius: 16px;
 	border-width: 0 0 4px;
