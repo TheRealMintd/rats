@@ -1,3 +1,17 @@
+.title {
+	text-align: center;
+    letter-spacing: 0.8px;
+    font-family: fantasy;
+}
+
+.margin-btm-0 {
+	margin-bottom: 0;
+}
+
+.margin-top-0 {
+	margin-top: 0;
+}
+
 .board {
 	padding: 10px;
 	background: linear-gradient(
