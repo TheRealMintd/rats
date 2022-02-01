@@ -36,7 +36,6 @@ export const roll = (): void => {
 export const BanquetGoalBoard = (): ReactElement => {
     return (
         <div className='board'>
-            <h1 className='banquet-h1'>ROLL A BANQUET GOAL</h1>
             <div className='dice-container'>
                 <div className='dice-wrapper'>
                     <img className='dice-img' src='/dice-1.png' id='die-1'/>
