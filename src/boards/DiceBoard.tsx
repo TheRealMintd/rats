@@ -12,15 +12,18 @@ const images = [
     '/dice-6.png'
 ];
 
-const dice = document.querySelectorAll('img');
+const dice = [
+    document.querySelector('#die-1'),
+    document.querySelector('#die-2'),
+];
 
 export const roll = (): void => {
     dice.forEach(function(die) {
-        die.classList.add('shake');
+        die?.classList.add('shake');
     });
     setTimeout(function() {
         dice.forEach(function(die) {
-            die.classList.remove('shake');
+            die?.classList.remove('shake');
         });
         const dieOneValue: number = Math.floor(Math.random() * 6);
         const dieTwoValue: number = Math.floor(Math.random() * 6);
