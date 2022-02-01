@@ -39,6 +39,10 @@
 	width: 110px;
 }
 
+.shadow {
+	filter: drop-shadow(2px 4px 6px black);
+}
+
 .heading {
 	font-size: 16px;
 	font-weight: 700;

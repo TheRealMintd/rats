@@ -16,6 +16,20 @@ const banquetImages = [
     '/dainty.png',
 ];
 
+export const banquetGoals = [
+    '#cheap',
+    '#composed',
+    '#greedy',
+    '#refined',
+    '#generous',
+    '#plush',
+    '#swanky',
+    '#dapper',
+    '#grandiose',
+    '#elegant',
+    '#dainty',
+];
+
 export const BanquetBoard = (): ReactElement => {
 
     return (

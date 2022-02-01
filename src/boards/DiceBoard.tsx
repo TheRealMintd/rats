@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 
 import '../styles/board.css';
+import { banquetGoals } from './BanquetBoard';
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 const images = [
@@ -27,10 +28,11 @@ export const roll = (): void => {
         });
         const dieOneValue: number = Math.floor(Math.random() * 6);
         const dieTwoValue: number = Math.floor(Math.random() * 6);
-        const total: string = (dieOneValue + 1 + dieTwoValue + 1).toString();
+        const total: number = dieOneValue + 1 + dieTwoValue + 1;
         document.querySelector('#die-1')?.setAttribute('src', images[dieOneValue]);
         document.querySelector('#die-2')?.setAttribute('src', images[dieTwoValue]);
-        document.querySelector('#total')!.innerHTML = 'The banquet goal is ' + total;
+        document.querySelector('#total')!.innerHTML = 'The banquet goal is ' + total.toString();
+        document.querySelector(banquetGoals[total - 2])?.classList.add('shadow');
     },
     1000
     );
