@@ -33,7 +33,7 @@ export const roll = (): void => {
     );
 };
 
-export const BanquetGoalBoard = (): ReactElement => {
+export const DiceBoard = (): ReactElement => {
     return (
         <div className='board'>
             <div className='dice-container'>
