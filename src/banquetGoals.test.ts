@@ -11,18 +11,18 @@ import {
 	Composed,
 	Plush,
 } from "./banquetGoals";
-import { GameData, PlayerInventory } from "./types";
+import { GameData, PlayerData, PlayerInventory } from "./types";
 import { defaultInventory, sortedByCocktailSwords } from "./utils";
 
 it("correctly calculates rankings for 'Cheap'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), dishes: [2, 3, 1] },
-		{ ...defaultInventory(), decorations: [8, 100, 1] },
-		{ ...defaultInventory(), dishes: [1], decorations: [9] },
-		defaultInventory(),
-	];
+	const players = generateTestInventory([
+		{ dishes: [2, 3, 1] },
+		{ decorations: [8, 100, 1] },
+		{ dishes: [1], decorations: [9] },
+		{},
+	]);
 
-	const result = new Cheap().findWinners(playerData);
+	const result = new Cheap().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["3"]);
 	expect(result.second.sort()).toEqual(["2"]);
@@ -30,16 +30,16 @@ it("correctly calculates rankings for 'Cheap'", () => {
 });
 
 it("correctly calculates rankings for 'Greedy'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), dishes: [20, 40, 40, 40, 40, 40] },
-		{ ...defaultInventory(), decorations: [1000] },
-		{ ...defaultInventory(), dishes: [100] },
-		{ ...defaultInventory(), dishes: [50, 50, 50] },
-		{ ...defaultInventory(), dishes: [40] },
-		{ ...defaultInventory(), dishes: [50] },
-	];
+	const players = generateTestInventory([
+		{ dishes: [20, 40, 40, 40, 40, 40] },
+		{ decorations: [1000] },
+		{ dishes: [100] },
+		{ dishes: [50, 50, 50] },
+		{ dishes: [40] },
+		{ dishes: [50] },
+	]);
 
-	const result = new Greedy().findWinners(playerData);
+	const result = new Greedy().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["2"]);
 	expect(result.second.sort()).toEqual(["3", "5"]);
@@ -47,16 +47,16 @@ it("correctly calculates rankings for 'Greedy'", () => {
 });
 
 it("correctly calculates rankings for 'Generous'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), dishes: [20, 40, 40, 40, 40] },
-		{ ...defaultInventory(), decorations: [1000] },
-		{ ...defaultInventory(), dishes: [100, 100] },
-		{ ...defaultInventory(), dishes: [50, 50, 50] },
-		{ ...defaultInventory(), dishes: [40, 40] },
-		{ ...defaultInventory(), dishes: [50] },
-	];
+	const players = generateTestInventory([
+		{ dishes: [20, 40, 40, 40, 40] },
+		{ decorations: [1000] },
+		{ dishes: [100, 100] },
+		{ dishes: [50, 50, 50] },
+		{ dishes: [40, 40] },
+		{ dishes: [50] },
+	]);
 
-	const result = new Generous().findWinners(playerData);
+	const result = new Generous().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["0"]);
 	expect(result.second.sort()).toEqual(["3"]);
@@ -64,16 +64,16 @@ it("correctly calculates rankings for 'Generous'", () => {
 });
 
 it("correctly calculates rankings for 'Refined'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), dishes: [20, 40, 40, 40, 40] }, // 180
-		{ ...defaultInventory(), decorations: [1000] }, // 0
-		{ ...defaultInventory(), dishes: [100, 100] }, // 200
-		{ ...defaultInventory(), dishes: [50, 50, 50, 50] }, // 200
-		{ ...defaultInventory(), dishes: [40, 40] }, // 80
-		{ ...defaultInventory(), dishes: [30, 30] }, // 60
-	];
+	const players = generateTestInventory([
+		{ dishes: [20, 40, 40, 40, 40] }, // 180
+		{ decorations: [1000] }, // 0
+		{ dishes: [100, 100] }, // 200
+		{ dishes: [50, 50, 50, 50] }, // 200
+		{ dishes: [40, 40] }, // 80
+		{ dishes: [30, 30] }, // 60
+	]);
 
-	const result = new Refined().findWinners(playerData);
+	const result = new Refined().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["2", "3"]);
 	expect(result.second.sort()).toEqual(["0"]);
@@ -81,16 +81,16 @@ it("correctly calculates rankings for 'Refined'", () => {
 });
 
 it("correctly calculates rankings for 'Swanky'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), decorations: [20, 40, 40, 40, 40] }, // 5
-		{ ...defaultInventory(), dishes: [1000] }, // 0
-		{ ...defaultInventory(), decorations: [100, 100] }, // 2
-		{ ...defaultInventory(), decorations: [50, 50, 50, 50] }, // 4
-		{ ...defaultInventory(), decorations: [40, 40] }, // 2
-		{ ...defaultInventory(), decorations: [30] }, // 1
-	];
+	const players = generateTestInventory([
+		{ decorations: [20, 40, 40, 40, 40] }, // 5
+		{ dishes: [1000] }, // 0
+		{ decorations: [100, 100] }, // 2
+		{ decorations: [50, 50, 50, 50] }, // 4
+		{ decorations: [40, 40] }, // 2
+		{ decorations: [30] }, // 1
+	]);
 
-	const result = new Swanky().findWinners(playerData);
+	const result = new Swanky().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["0"]);
 	expect(result.second.sort()).toEqual(["3"]);
@@ -98,16 +98,16 @@ it("correctly calculates rankings for 'Swanky'", () => {
 });
 
 it("correctly calculates rankings for 'Dapper'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), decorations: [20, 40, 40, 40, 40] }, // 180
-		{ ...defaultInventory(), dishes: [1000] }, // 0
-		{ ...defaultInventory(), decorations: [100, 100] }, // 200
-		{ ...defaultInventory(), decorations: [50, 50, 50, 50] }, // 200
-		{ ...defaultInventory(), decorations: [40, 40] }, // 80
-		{ ...defaultInventory(), decorations: [30, 30] }, // 60
-	];
+	const players = generateTestInventory([
+		{ decorations: [20, 40, 40, 40, 40] }, // 180
+		{ dishes: [1000] }, // 0
+		{ decorations: [100, 100] }, // 200
+		{ decorations: [50, 50, 50, 50] }, // 200
+		{ decorations: [40, 40] }, // 80
+		{ decorations: [30, 30] }, // 60
+	]);
 
-	const result = new Dapper().findWinners(playerData);
+	const result = new Dapper().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["2", "3"]);
 	expect(result.second.sort()).toEqual(["0"]);
@@ -115,16 +115,16 @@ it("correctly calculates rankings for 'Dapper'", () => {
 });
 
 it("correctly calculates rankings for 'Elegant'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), dishes: [4, 7, 9], decorations: [2, 3] }, // 3
-		{ ...defaultInventory(), dishes: [1] }, // 1
-		{ ...defaultInventory(), dishes: [9, 2, 8], decorations: [12, 10, 11] }, // 5
-		{ ...defaultInventory(), decorations: [1, 2, 3] }, // 3
-		{ ...defaultInventory(), dishes: [1, 2] }, // 2
-		{ ...defaultInventory(), decorations: [3, 6, 9] }, // 1
-	];
+	const players = generateTestInventory([
+		{ dishes: [4, 7, 9], decorations: [2, 3] }, // 3
+		{ dishes: [1] }, // 1
+		{ dishes: [9, 2, 8], decorations: [12, 10, 11] }, // 5
+		{ decorations: [1, 2, 3] }, // 3
+		{ dishes: [1, 2] }, // 2
+		{ decorations: [3, 6, 9] }, // 1
+	]);
 
-	const result = new Elegant().findWinners(playerData);
+	const result = new Elegant().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["2"]);
 	expect(result.second.sort()).toEqual(["0", "3"]);
@@ -132,16 +132,16 @@ it("correctly calculates rankings for 'Elegant'", () => {
 });
 
 it("correctly calculates rankings for 'Grandiose'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), decorations: [20, 40, 40, 40, 40, 40] },
-		{ ...defaultInventory(), dishes: [1000] },
-		{ ...defaultInventory(), decorations: [100] },
-		{ ...defaultInventory(), decorations: [50, 50, 50] },
-		{ ...defaultInventory(), decorations: [40] },
-		{ ...defaultInventory(), decorations: [50] },
-	];
+	const players = generateTestInventory([
+		{ decorations: [20, 40, 40, 40, 40, 40] },
+		{ dishes: [1000] },
+		{ decorations: [100] },
+		{ decorations: [50, 50, 50] },
+		{ decorations: [40] },
+		{ decorations: [50] },
+	]);
 
-	const result = new Grandiose().findWinners(playerData);
+	const result = new Grandiose().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["2"]);
 	expect(result.second.sort()).toEqual(["3", "5"]);
@@ -149,16 +149,16 @@ it("correctly calculates rankings for 'Grandiose'", () => {
 });
 
 it("correctly calculates rankings for 'Dainty'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), decorations: [2, 3, 2, 4, 3, 2] }, //5
-		{ ...defaultInventory(), dishes: [1000] }, //0
-		{ ...defaultInventory(), decorations: [1] }, //1
-		{ ...defaultInventory(), decorations: [1, 1] }, //2
-		{ ...defaultInventory(), dishes: [1], decorations: [4] }, //1
-		{ ...defaultInventory(), decorations: [5] }, //0
-	];
+	const players = generateTestInventory([
+		{ decorations: [2, 3, 2, 4, 3, 2] }, //5
+		{ dishes: [1000] }, //0
+		{ decorations: [1] }, //1
+		{ decorations: [1, 1] }, //2
+		{ dishes: [1], decorations: [4] }, //1
+		{ decorations: [5] }, //0
+	]);
 
-	const result = new Dainty().findWinners(playerData);
+	const result = new Dainty().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["0"]);
 	expect(result.second.sort()).toEqual(["3"]);
@@ -166,16 +166,16 @@ it("correctly calculates rankings for 'Dainty'", () => {
 });
 
 it("correctly calculates rankings for 'Composed'", () => {
-	const playerData: PlayerInventory[] = [
-		{ ...defaultInventory(), decorations: [2, 2, 2, 4, 4, 2] }, //6
-		{ ...defaultInventory(), dishes: [1000] }, //0
-		{ ...defaultInventory(), decorations: [1] }, //0
-		{ ...defaultInventory(), decorations: [1, 1] }, //2
-		{ ...defaultInventory(), dishes: [4], decorations: [4] }, //2
-		{ ...defaultInventory(), decorations: [5, 5, 2, 5] }, //3
-	];
+	const players = generateTestInventory([
+		{ decorations: [2, 2, 2, 4, 4, 2] }, //6
+		{ dishes: [1000] }, //0
+		{ decorations: [1] }, //0
+		{ decorations: [1, 1] }, //2
+		{ dishes: [4], decorations: [4] }, //2
+		{ decorations: [5, 5, 2, 5] }, //3
+	]);
 
-	const result = new Composed().findWinners(playerData);
+	const result = new Composed().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["0"]);
 	expect(result.second.sort()).toEqual(["5"]);
@@ -183,36 +183,32 @@ it("correctly calculates rankings for 'Composed'", () => {
 });
 
 it("correctly calculates rankings for 'Plush'", () => {
-	const playerData: PlayerInventory[] = [
+	const players = generateTestInventory([
 		{
-			...defaultInventory(),
 			baubles: { hasNest: true, amount: 0 },
 			straw: { hasNest: true, amount: 6 },
 			flowers: { hasNest: false, amount: 6 },
 		}, //2
 		{
-			...defaultInventory(),
 			baubles: { hasNest: false, amount: 0 },
 			straw: { hasNest: false, amount: 6 },
 			flowers: { hasNest: false, amount: 6 },
 		}, //0
 		{
-			...defaultInventory(),
 			baubles: { hasNest: true, amount: 0 },
 			straw: { hasNest: true, amount: 6 },
 			flowers: { hasNest: true, amount: 6 },
 		}, //3
-		{ ...defaultInventory(), decorations: [1, 1] }, //0
+		{ decorations: [1, 1] }, //0
 		{
-			...defaultInventory(),
 			baubles: { hasNest: true, amount: 0 },
 			straw: { hasNest: false, amount: 6 },
 			flowers: { hasNest: false, amount: 6 },
 		}, //1
-		{ ...defaultInventory(), decorations: [5, 5, 2, 5] }, //0
-	];
+		{ decorations: [5, 5, 2, 5] }, //0
+	]);
 
-	const result = new Plush().findWinners(playerData);
+	const result = new Plush().findWinners(players);
 
 	expect(result.first.sort()).toEqual(["2"]);
 	expect(result.second.sort()).toEqual(["0"]);
@@ -220,36 +216,30 @@ it("correctly calculates rankings for 'Plush'", () => {
 });
 
 it("correctly calculates the play order for 'outDoCocktailSwords' phase", () => {
-	const playerData: PlayerInventory[] = [
+	const players = generateTestInventory([
 		{
-			...defaultInventory(),
 			cocktailSwords: { amount: 11, hasNest: false },
 		},
 		{
-			...defaultInventory(),
 			cocktailSwords: { amount: 20, hasNest: false },
 		},
 		{
-			...defaultInventory(),
 			cocktailSwords: { amount: 10, hasNest: false },
 		},
 		{
-			...defaultInventory(),
 			cocktailSwords: { amount: 15, hasNest: false },
 		},
 		{
-			...defaultInventory(),
 			cocktailSwords: { amount: 11, hasNest: false },
 		},
 		{
-			...defaultInventory(),
 			cocktailSwords: { amount: 12, hasNest: false },
 		},
-	];
+	]);
 	const G = {
 		round: 0,
 		host: ["2"],
-		playerData,
+		players,
 		supplyTaken: [],
 	} as unknown as GameData;
 
@@ -257,3 +247,14 @@ it("correctly calculates the play order for 'outDoCocktailSwords' phase", () => 
 
 	expect(result).toEqual(["1", "3", "5", "0", "4"]);
 });
+
+function generateTestInventory(
+	inventoryOverrides: Partial<PlayerInventory>[]
+): PlayerData {
+	return Object.fromEntries(
+		inventoryOverrides.map((partialInventory, player) => [
+			player.toString(),
+			{ ...defaultInventory(), ...partialInventory },
+		])
+	);
+}

@@ -23,18 +23,17 @@ export function defaultInventory(): PlayerInventory {
  * @returns a list of string representing the player ID
  */
 export function sortedByCocktailSwords(G: GameData): string[] {
-	return G.playerData
-		.map((inventory, player) => ({
+	return Object.entries(G.players)
+		.map(([player, inventory]) => ({
 			player,
 			cocktailSwords: inventory.cocktailSwords.amount,
 		}))
 		.filter(
-			(obj) =>
-				obj.cocktailSwords >
-				G.playerData[parseInt(G.host[0])].cocktailSwords.amount
+			({ cocktailSwords }) =>
+				cocktailSwords > G.players[G.host[0]].cocktailSwords.amount
 		)
 		.sort(({ cocktailSwords: a }, { cocktailSwords: b }) => b - a)
-		.map((obj) => obj.player.toString());
+		.map(({ player }) => player);
 }
 
 export function rollDice(G: GameData, ctx: Ctx): void {
@@ -55,11 +54,14 @@ export function scavengeSetup(G: GameData, ctx: Ctx): void {
 }
 
 export function findPlayersWhoOutdoHost(G: GameData, item: Resource): string[] {
-	const hostAmount = G.playerData[parseInt(G.host[0])][item].amount;
-	return G.playerData.flatMap(({ [item]: { amount } }, index) =>
-		G.host[0] === index.toString() || amount > hostAmount
-			? []
-			: [index.toString()]
+	const hostAmount = G.players[G.host[0]][item].amount;
+	return Object.entries(G.players).flatMap(
+		([
+			player,
+			{
+				[item]: { amount },
+			},
+		]) => (G.host[0] === player || amount > hostAmount ? [] : [player])
 	);
 }
 

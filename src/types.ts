@@ -4,9 +4,9 @@ export interface GameData {
 	dice1: number;
 	dice2: number;
 	banquetGoalIndexes: number[];
-	playerData: PlayerInventory[];
+	players: PlayerData;
 	cockTailSwordsOrder: Array<string>;
-	supplyTaken: Array<Resource | "none">;
+	supplyTaken: { [player: string]: Resource | "none"},
 	flowers: Array<number>;
 	winner: string;
 }
@@ -27,5 +27,6 @@ export interface BaseResource {
 	amount: number;
 }
 
+export type PlayerData = { [player: string]: PlayerInventory };
 export type Resource = keyof Omit<PlayerInventory, "dishes" | "decorations">;
 export type Craftable = "dish" | "decoration";

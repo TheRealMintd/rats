@@ -1,4 +1,4 @@
-import type { PlayerInventory, Resource } from "./types";
+import type { PlayerData, Resource } from "./types";
 
 export interface Ranking {
 	first: string[];
@@ -12,12 +12,12 @@ interface InternalScore {
 }
 
 export abstract class BanquetGoal {
-	findWinners(playerData: PlayerInventory[]): Ranking {
+	findWinners(players: PlayerData): Ranking {
 		const first: InternalScore[] = [];
 		const second: InternalScore[] = [];
 		const third: InternalScore[] = [];
 
-		this.findInternalScores(playerData).forEach((score) => {
+		this.findInternalScores(players).forEach((score) => {
 			if (!first.length || score.value === first[0].value) {
 				first.push(score);
 			} else if (!second.length || score.value === second[0].value) {
@@ -34,9 +34,7 @@ export abstract class BanquetGoal {
 		};
 	}
 
-	protected abstract findInternalScores(
-		playerData: PlayerInventory[]
-	): InternalScore[];
+	protected abstract findInternalScores(players: PlayerData): InternalScore[];
 }
 
 /**
@@ -48,11 +46,11 @@ export abstract class BanquetGoal {
  */
 export class Cheap extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player) => ({
-				player: player.toString(),
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
+				player,
 				value: inventory.dishes.length + inventory.decorations.length,
 			}))
 			.sort(({ value: a }, { value: b }) => a - b);
@@ -68,18 +66,16 @@ export class Cheap extends BanquetGoal {
  */
 export class Composed extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				this.totalFreq(inventory.decorations.concat(inventory.dishes)),
-			])
-			.filter(([_, combined]) => combined)
-			.map(([player, combined]) => ({
-				player: player.toString(),
-				value: combined,
+				value: this.totalFreq(
+					inventory.decorations.concat(inventory.dishes)
+				),
 			}))
+			.filter(({ value }) => value)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 
@@ -99,16 +95,16 @@ export class Composed extends BanquetGoal {
  */
 export class Greedy extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number[]] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				inventory.dishes,
-			])
-			.filter(([_, dishes]) => dishes.length)
-			.map(([player, dishes]) => ({
-				player: player.toString(),
+				dishes: inventory.dishes,
+			}))
+			.filter(({ dishes }) => dishes.length)
+			.map(({ player, dishes }) => ({
+				player,
 				value: Math.max(...dishes),
 			}))
 			.sort(({ value: a }, { value: b }) => b - a);
@@ -124,18 +120,14 @@ export class Greedy extends BanquetGoal {
  */
 export class Refined extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				inventory.dishes.reduce((acc, curr) => acc + curr, 0),
-			])
-			.filter(([_, dishes]) => dishes)
-			.map(([player, dishes]) => ({
-				player: player.toString(),
-				value: dishes,
+				value: inventory.dishes.reduce((acc, curr) => acc + curr, 0),
 			}))
+			.filter(({ value }) => value)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
@@ -148,18 +140,14 @@ export class Refined extends BanquetGoal {
  */
 export class Generous extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number[]] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				inventory.dishes,
-			])
-			.filter(([_, dishes]) => dishes.length)
-			.map(([player, dishes]) => ({
-				player: player.toString(),
-				value: dishes.length,
+				value: inventory.dishes.length,
 			}))
+			.filter(({ value }) => value)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
@@ -181,20 +169,16 @@ export class Plush extends BanquetGoal {
 	];
 
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				Plush.resources
+				value: Plush.resources
 					.map((resource) => inventory[resource].hasNest)
 					.filter((i) => i).length,
-			])
-			.filter(([_, numNest]) => numNest)
-			.map(([player, numNest]) => ({
-				player: player.toString(),
-				value: numNest,
 			}))
+			.filter(({ value }) => value)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
@@ -208,18 +192,14 @@ export class Plush extends BanquetGoal {
  */
 export class Swanky extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				inventory.decorations.length,
-			])
-			.filter(([_, decorations]) => decorations)
-			.map(([player, decorations]) => ({
-				player: player.toString(),
-				value: decorations,
+				value: inventory.decorations.length,
 			}))
+			.filter(({ value }) => value)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
@@ -233,18 +213,17 @@ export class Swanky extends BanquetGoal {
  */
 export class Dapper extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				inventory.decorations.reduce((acc, curr) => acc + curr, 0),
-			])
-			.filter(([_, decorations]) => decorations)
-			.map(([player, decorations]) => ({
-				player: player.toString(),
-				value: decorations,
+				value: inventory.decorations.reduce(
+					(acc, curr) => acc + curr,
+					0
+				),
 			}))
+			.filter(({ value }) => value)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }
@@ -257,16 +236,16 @@ export class Dapper extends BanquetGoal {
  */
 export class Grandiose extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number[]] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				inventory.decorations,
-			])
-			.filter(([_, decorations]) => decorations.length)
-			.map(([player, decorations]) => ({
-				player: player.toString(),
+				decorations: inventory.decorations,
+			}))
+			.filter(({ decorations }) => decorations.length)
+			.map(({ player, decorations }) => ({
+				player,
 				value: Math.max(...decorations),
 			}))
 			.sort(({ value: a }, { value: b }) => b - a);
@@ -282,22 +261,18 @@ export class Grandiose extends BanquetGoal {
  */
 export class Elegant extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				this.findLongestRun(
+				value: this.findLongestRun(
 					inventory.dishes
 						.concat(inventory.decorations)
 						.sort((a, b) => a - b)
 				),
-			])
-			.filter(([_, run]) => run > 1)
-			.map(([player, run]) => ({
-				player: player.toString(),
-				value: run,
 			}))
+			.filter(({ value }) => value > 1)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 
@@ -326,20 +301,16 @@ export class Elegant extends BanquetGoal {
  */
 export class Dainty extends BanquetGoal {
 	protected override findInternalScores(
-		playerData: PlayerInventory[]
+		players: PlayerData
 	): InternalScore[] {
-		return playerData
-			.map((inventory, player): [number, number[]] => [
+		return Object.entries(players)
+			.map(([player, inventory]) => ({
 				player,
-				inventory.decorations
+				value: inventory.decorations
 					.concat(inventory.dishes)
-					.filter((i) => i <= 3),
-			])
-			.filter(([_, combined]) => combined.length)
-			.map(([player, combined]) => ({
-				player: player.toString(),
-				value: combined.length,
+					.filter((i) => i <= 3).length,
 			}))
+			.filter(({ value }) => value)
 			.sort(({ value: a }, { value: b }) => b - a);
 	}
 }

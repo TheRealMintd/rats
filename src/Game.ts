@@ -17,7 +17,12 @@ import {
 	findWinners,
 	verifyWinner,
 } from "./moves";
-import { rollDice, scavengeSetup, setStageForOutdoers } from "./utils";
+import {
+	defaultInventory,
+	rollDice,
+	scavengeSetup,
+	setStageForOutdoers,
+} from "./utils";
 
 export const Rats: Game = {
 	maxPlayers: 6,
@@ -27,20 +32,19 @@ export const Rats: Game = {
 		dice1: 0,
 		dice2: 0,
 		banquetGoalIndexes: [],
-		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
-			cocktailSwords: { hasNest: false, amount: 0 },
-			baubles: { hasNest: false, amount: 0 },
-			straw: { hasNest: false, amount: 0 },
-			crumbs: { hasNest: false, amount: 0 },
-			rags: { hasNest: false, amount: 0 },
-			flowers: { hasNest: false, amount: 0 },
-			dishes: [],
-			decorations: [],
-		})),
+		players: Object.fromEntries(
+			new Array(ctx.numPlayers)
+				.fill(0)
+				.map((_, player) => [player.toString(), defaultInventory()])
+		),
 		cockTailSwordsOrder: Array.from({ length: ctx.numPlayers }, (e, i) =>
 			i.toString()
 		),
-		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
+		supplyTaken: Object.fromEntries(
+			new Array(ctx.numPlayers)
+				.fill(0)
+				.map((_, player) => [player.toString(), "none"])
+		),
 		flowers: new Array<number>(ctx.numPlayers).fill(0),
 		winner: "none",
 	}),
@@ -115,13 +119,12 @@ export const Rats: Game = {
 				order: TurnOrder.CUSTOM_FROM("host"),
 			},
 			endIf: (G: GameData) => {
-				const hostAmount =
-					G.playerData[parseInt(G.host[0])].cocktailSwords.amount;
-				const cocktailSwordsAmounts = G.playerData.map(
+				const hostAmount = G.players[G.host[0]].cocktailSwords.amount;
+				const cocktailSwordsAmounts = Object.values(G.players).map(
 					(inventory) => inventory.cocktailSwords.amount
 				);
 				// check the cocktail swords amounts for players who out-do the host are repeated or not
-				const orderRequired = G.playerData
+				const orderRequired = Object.values(G.players)
 					.map((inventory) => {
 						const currentAmount = inventory.cocktailSwords.amount;
 						return (
@@ -195,7 +198,7 @@ export const Rats: Game = {
 			onBegin: (G: GameData, ctx: Ctx) => {
 				// TODO: set active players who out-do host
 				// Keep a copy of flowers amount for each player
-				G.flowers = G.playerData.map(
+				G.flowers = Object.values(G.players).map(
 					(inventory) => inventory.flowers.amount
 				);
 				// Determine the new host

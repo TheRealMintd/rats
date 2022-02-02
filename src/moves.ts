@@ -41,18 +41,18 @@ export function addResource(
 		return INVALID_MOVE;
 	}
 
-	const targetResource = G.playerData[parseInt(ctx.currentPlayer)][resource];
+	const targetResource = G.players[ctx.currentPlayer][resource];
 	targetResource.amount += targetResource.hasNest ? amount * 2 : amount;
 }
 
 export function makeDish(G: GameData, ctx: Ctx): void {
-	const inventory = G.playerData[parseInt(ctx.currentPlayer)];
+	const inventory = G.players[ctx.currentPlayer];
 	inventory.dishes.push(inventory.crumbs.amount);
 	inventory.crumbs.amount = 0;
 }
 
 export function makeDecoration(G: GameData, ctx: Ctx): void {
-	const inventory = G.playerData[parseInt(ctx.currentPlayer)];
+	const inventory = G.players[ctx.currentPlayer];
 	inventory.decorations.push(inventory.rags.amount);
 	inventory.rags.amount = 0;
 }
@@ -62,13 +62,12 @@ export function useCocktailSwords(
 	ctx: Ctx,
 	resource: Resource,
 	amount: number,
-	selectedPlayer: number
+	selectedPlayer: string
 ): void {
-	const targetResource =
-		G.playerData[parseInt(ctx.currentPlayer)].cocktailSwords;
+	const targetResource = G.players[ctx.currentPlayer].cocktailSwords;
 
 	if (targetResource.amount > 0) {
-		const selectedResource = G.playerData[selectedPlayer][resource];
+		const selectedResource = G.players[selectedPlayer][resource];
 
 		// validate the resource of selected player has not been taken by other player
 		if (
@@ -80,8 +79,7 @@ export function useCocktailSwords(
 			// deduct resource's amount of selected player
 			selectedResource.amount -= amount;
 			// add resource's amount of current player
-			G.playerData[parseInt(ctx.currentPlayer)][resource].amount +=
-				amount;
+			G.players[ctx.currentPlayer][resource].amount += amount;
 			// update supply taken for selected player
 			G.supplyTaken[selectedPlayer] = resource;
 		}
@@ -89,23 +87,23 @@ export function useCocktailSwords(
 }
 
 export function useBaubles(G: GameData, ctx: Ctx, resource: Resource): void {
-	const targetResource = G.playerData[parseInt(ctx.currentPlayer)].baubles;
+	const targetResource = G.players[ctx.currentPlayer].baubles;
 	if (targetResource.amount > 0) {
 		targetResource.amount = 0;
-		G.playerData[parseInt(ctx.currentPlayer)][resource].amount += 5;
+		G.players[ctx.currentPlayer][resource].amount += 5;
 	}
 }
 
 export function buildNest(G: GameData, ctx: Ctx, resource: Resource): void {
-	const targetResource = G.playerData[parseInt(ctx.currentPlayer)].straw;
+	const targetResource = G.players[ctx.currentPlayer].straw;
 	if (targetResource.amount > 0) {
 		targetResource.amount = 0;
-		G.playerData[parseInt(ctx.currentPlayer)][resource].hasNest = true;
+		G.players[ctx.currentPlayer][resource].hasNest = true;
 	}
 }
 
 export function useFlowers(G: GameData, ctx: Ctx, type: Craftable): void {
-	const inventory = G.playerData[parseInt(ctx.currentPlayer)];
+	const inventory = G.players[ctx.currentPlayer];
 	inventory[type === "dish" ? "dishes" : "decorations"].push(
 		inventory.flowers.amount
 	);
@@ -117,20 +115,17 @@ export function verifyCocktailSwordsOrder(
 	ctx: Ctx,
 	playOrder: string[]
 ): void | typeof INVALID_MOVE {
-	const ids = playOrder.map((order) => parseInt(order));
-	const valid = ids
-		.map((id, index) => {
-			if (index > 0) {
-				const prevAmount =
-					G.playerData[ids[index - 1]].cocktailSwords.amount;
-				const currentAmount = G.playerData[id].cocktailSwords.amount;
-				if (prevAmount < currentAmount) {
-					return false;
-				}
-				return true;
-			}
-		})
-		.reduce((acc, curr) => acc && curr, true);
+	const valid = playOrder.every((player, index) => {
+		if (index === 0) {
+			return true;
+		}
+
+		const previousAmount =
+			G.players[playOrder[index - 1]].cocktailSwords.amount;
+		const amount = G.players[player].cocktailSwords.amount;
+		return previousAmount >= amount;
+	});
+
 	if (!valid) {
 		return INVALID_MOVE;
 	} else {
@@ -179,9 +174,9 @@ export function determineHost(
  */
 export function calculateScores(G: GameData, ctx: Ctx): number[] {
 	const rankings = G.banquetGoalIndexes.map((index) =>
-		banquetGoals[index].findWinners(G.playerData)
+		banquetGoals[index].findWinners(G.players)
 	);
-	const scores = new Array<number>(ctx.numPlayers).map((score, index) => {
+	return new Array<number>(ctx.numPlayers).map((score, index) => {
 		return rankings
 			.map((ranking) => {
 				let internalScore = 0;
@@ -196,7 +191,6 @@ export function calculateScores(G: GameData, ctx: Ctx): number[] {
 			})
 			.reduce((acc, curr) => acc + curr, 0);
 	});
-	return scores;
 }
 
 /**
