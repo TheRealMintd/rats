@@ -1,10 +1,14 @@
-import type { BanquetGoal } from "./banquetGoals";
-
 export interface GameData {
 	round: number;
+	host: [string];
+	dice1: number;
+	dice2: number;
 	banquetGoalIndexes: number[];
-	playerData: PlayerInventory[];
-	supplyTaken: Array<Resource | "none">;
+	players: PlayerData;
+	cockTailSwordsOrder: Array<string>;
+	supplyTaken: { [player: string]: Resource | "none"},
+	flowers: Array<number>;
+	winner: string;
 }
 
 export interface PlayerInventory {
@@ -23,5 +27,6 @@ export interface BaseResource {
 	amount: number;
 }
 
+export type PlayerData = { [player: string]: PlayerInventory };
 export type Resource = keyof Omit<PlayerInventory, "dishes" | "decorations">;
 export type Craftable = "dish" | "decoration";

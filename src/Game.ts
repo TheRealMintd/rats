@@ -1,107 +1,245 @@
 import type { Ctx, Game } from "boardgame.io";
-import { INVALID_MOVE } from "boardgame.io/core";
+import { TurnOrder } from "boardgame.io/core";
 
-import type { Resource, Craftable, GameData } from "./types";
+import type { GameData } from "./types";
+import {
+	pickBanquetGoal,
+	addResource,
+	makeDish,
+	makeDecoration,
+	useCocktailSwords,
+	useBaubles,
+	buildNest,
+	useFlowers,
+	verifyCocktailSwordsOrder,
+	playersTieOnFlowers,
+	determineHost,
+	findWinners,
+	verifyWinner,
+} from "./moves";
+import {
+	defaultInventory,
+	rollDice,
+	scavengeSetup,
+	setStageForOutdoers,
+} from "./utils";
 
 export const Rats: Game = {
 	maxPlayers: 6,
 	setup: (ctx): GameData => ({
 		round: 0,
+		host: ["0"], // TODO: create logic to choose the host
+		dice1: 0,
+		dice2: 0,
 		banquetGoalIndexes: [],
-		playerData: new Array(ctx.numPlayers).fill(0).map(() => ({
-			cocktailSwords: { hasNest: false, amount: 0 },
-			baubles: { hasNest: false, amount: 0 },
-			straw: { hasNest: false, amount: 0 },
-			crumbs: { hasNest: false, amount: 0 },
-			rags: { hasNest: false, amount: 0 },
-			flowers: { hasNest: false, amount: 0 },
-			dishes: [],
-			decorations: [],
-		})),
-		supplyTaken: new Array(ctx.numPlayers).fill(0).map(() => "none"),
+		players: Object.fromEntries(
+			new Array(ctx.numPlayers)
+				.fill(0)
+				.map((_, player) => [player.toString(), defaultInventory()])
+		),
+		cockTailSwordsOrder: Array.from({ length: ctx.numPlayers }, (e, i) =>
+			i.toString()
+		),
+		supplyTaken: Object.fromEntries(
+			new Array(ctx.numPlayers)
+				.fill(0)
+				.map((_, player) => [player.toString(), "none"])
+		),
+		flowers: new Array<number>(ctx.numPlayers).fill(0),
+		winner: "none",
 	}),
-	moves: {
-		addResource(G: GameData, ctx: Ctx, resource: Resource, amount: number) {
-			const targetResource =
-				G.playerData[parseInt(ctx.currentPlayer)][resource];
-			targetResource.amount += targetResource.hasNest
-				? amount * 2
-				: amount;
-		},
-		makeDish(G: GameData, ctx: Ctx): void {
-			const inventory = G.playerData[parseInt(ctx.currentPlayer)];
-			inventory.dishes.push(inventory.crumbs.amount);
-			inventory.crumbs.amount = 0;
-		},
-		makeDecoration(G: GameData, ctx: Ctx): void {
-			const inventory = G.playerData[parseInt(ctx.currentPlayer)];
-			inventory.decorations.push(inventory.rags.amount);
-			inventory.rags.amount = 0;
-		},
-		useCocktailSwords(
-			G: GameData,
-			ctx: Ctx,
-			resource: Resource,
-			amount: number,
-			selectedPlayer: number
-		): void {
-			const targetResource =
-				G.playerData[parseInt(ctx.currentPlayer)].cocktailSwords;
-
-			if (targetResource.amount > 0) {
-				const selectedResource = G.playerData[selectedPlayer][resource];
-
-				// validate the resource of selected player has not been taken by other player
-				if (
-					G.supplyTaken[selectedPlayer] !== resource &&
-					selectedResource.amount >= amount
-				) {
-					// reset cocktailSwords' amount of current player
-					targetResource.amount = 0;
-					// deduct resource's amount of selected player
-					selectedResource.amount -= amount;
-					// add resource's amount of current player
-					G.playerData[parseInt(ctx.currentPlayer)][
-						resource
-					].amount += amount;
-					// update supply taken for selected player
-					G.supplyTaken[selectedPlayer] = resource;
+	phases: {
+		rollBanquetGoal: {
+			start: true,
+			moves: { pickBanquetGoal },
+			turn: {
+				order: TurnOrder.CUSTOM_FROM("host"),
+			},
+			onBegin(G: GameData, ctx: Ctx) {
+				if (ctx.random === undefined) {
+					throw new ReferenceError("Ctx.random is undefined");
 				}
-			}
+
+				rollDice(G, ctx);
+				const banquetGoalIndex = G.dice1 + G.dice2 - 2;
+				const goalPresent =
+					G.banquetGoalIndexes.includes(banquetGoalIndex);
+
+				if (!goalPresent) {
+					G.banquetGoalIndexes.push(banquetGoalIndex);
+				}
+			},
+			endIf: (G: GameData) => {
+				if (G.banquetGoalIndexes.length === G.round + 1) {
+					return {
+						next:
+							G.round >= 5 ? "calculateResult" : "firstScavenge",
+					};
+				} else {
+					return false;
+				}
+			},
 		},
-		useBaubles(G: GameData, ctx: Ctx, resource: Resource): void {
-			const targetResource =
-				G.playerData[parseInt(ctx.currentPlayer)].baubles;
-			if (targetResource.amount > 0) {
-				targetResource.amount = 0;
-				G.playerData[parseInt(ctx.currentPlayer)][resource].amount += 5;
-			}
+		firstScavenge: {
+			onBegin: scavengeSetup,
+			turn: {
+				stages: {
+					scavenge: {
+						moves: { addResource },
+					},
+				},
+			},
+			next: "secondScavenge",
 		},
-		buildNest(G: GameData, ctx: Ctx, resource: Resource): void {
-			const targetResource =
-				G.playerData[parseInt(ctx.currentPlayer)].straw;
-			if (targetResource.amount > 0) {
-				targetResource.amount = 0;
-				G.playerData[parseInt(ctx.currentPlayer)][resource].hasNest =
-					true;
-			}
+		secondScavenge: {
+			onBegin: scavengeSetup,
+			turn: {
+				stages: {
+					scavenge: {
+						moves: { addResource },
+					},
+				},
+			},
+			next: "thirdScavenge",
 		},
-		useFlowers(G: GameData, ctx: Ctx, type: Craftable): void {
-			const inventory = G.playerData[parseInt(ctx.currentPlayer)];
-			inventory[type === "dish" ? "dishes" : "decorations"].push(
-				inventory.flowers.amount
-			);
-			inventory.flowers.amount = 0;
+		thirdScavenge: {
+			onBegin: scavengeSetup,
+			turn: {
+				stages: {
+					scavenge: {
+						moves: { addResource },
+					},
+				},
+			},
+			next: "orderCocktailSwords",
 		},
-		pickBanquetGoal(
-			G: GameData,
-			_: Ctx,
-			index: number
-		): void | typeof INVALID_MOVE {
-			if (G.banquetGoalIndexes.includes(index)) {
-				return INVALID_MOVE;
-			}
-			G.banquetGoalIndexes.push(index);
+		orderCocktailSwords: {
+			moves: { verifyCocktailSwordsOrder },
+			turn: {
+				order: TurnOrder.CUSTOM_FROM("host"),
+			},
+			endIf: (G: GameData) => {
+				const hostAmount = G.players[G.host[0]].cocktailSwords.amount;
+				const cocktailSwordsAmounts = Object.values(G.players).map(
+					(inventory) => inventory.cocktailSwords.amount
+				);
+				// check the cocktail swords amounts for players who out-do the host are repeated or not
+				const orderRequired = Object.values(G.players)
+					.map((inventory) => {
+						const currentAmount = inventory.cocktailSwords.amount;
+						return (
+							currentAmount > hostAmount &&
+							cocktailSwordsAmounts.filter(
+								(amount) => amount === currentAmount
+							).length > 1
+						);
+					})
+					.reduce((acc, curr) => acc || curr, false);
+				return !orderRequired;
+			},
+			next: "outDoCocktailSwords",
+		},
+		outDoCocktailSwords: {
+			next: "outDoBaubles",
+			turn: {
+				order: TurnOrder.CUSTOM_FROM("cocktailSwordsOrder"),
+			},
+			moves: { useCocktailSwords },
+		},
+		outDoBaubles: {
+			next: "outDoStraw",
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "baubles", "useBaubles"),
+			turn: {
+				stages: {
+					useBaubles: {
+						moves: { useBaubles },
+					},
+				},
+			},
+		},
+		outDoStraw: {
+			next: "outDoCrumbs",
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "straw", "useStraw"),
+			turn: {
+				stages: {
+					useStraw: {
+						moves: { buildNest },
+					},
+				},
+			},
+		},
+		outDoCrumbs: {
+			next: "outDoRags",
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "crumbs", "useCrumbs"),
+			turn: {
+				stages: {
+					useCrumbs: {
+						moves: { makeDish },
+					},
+				},
+			},
+		},
+		outDoRags: {
+			next: "outDoFlowers",
+			onBegin: (G: GameData, ctx: Ctx) =>
+				setStageForOutdoers(G, ctx, "rags", "useRags"),
+			turn: {
+				stages: {
+					useRags: {
+						moves: { makeDecoration },
+					},
+				},
+			},
+		},
+		outDoFlowers: {
+			onBegin: (G: GameData, ctx: Ctx) => {
+				// TODO: set active players who out-do host
+				// Keep a copy of flowers amount for each player
+				G.flowers = Object.values(G.players).map(
+					(inventory) => inventory.flowers.amount
+				);
+				// Determine the new host
+				return {
+					next:
+						playersTieOnFlowers(G, ctx).length > 0
+							? "determineHost"
+							: "rollBanquetGoal",
+				};
+			},
+			turn: {
+				stages: {
+					useFlowers: {
+						moves: { useFlowers },
+					},
+				},
+			},
+		},
+		determineHost: {
+			next: "rollBanquetGoal",
+			moves: { determineHost },
+			turn: {
+				order: TurnOrder.CUSTOM_FROM("host"),
+				moveLimit: 1,
+			},
+		},
+		calculateResult: {
+			moves: { verifyWinner },
+			turn: {
+				order: TurnOrder.CUSTOM_FROM("host"),
+			},
+			onBegin: (G: GameData, ctx: Ctx) => {
+				const winners = findWinners(G, ctx);
+				if (winners.length === 1) {
+					G.winner = winners[0];
+					return { winner: G.winner };
+				}
+			},
+			onEnd: (G: GameData, _: Ctx) => {
+				return { winner: G.winner };
+			},
 		},
 	},
 };
