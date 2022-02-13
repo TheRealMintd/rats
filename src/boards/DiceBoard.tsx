@@ -12,12 +12,11 @@ const images = [
     '/dice-6.png'
 ];
 
-const dice = [
-    document.querySelector('#die-1'),
-    document.querySelector('#die-2'),
-];
-
 export const roll = (): void => {
+    const dice = [
+        document.querySelector('#die-1'),
+        document.querySelector('#die-2'),
+    ];
     dice.forEach(function(die) {
         die?.classList.add('shake');
     });
