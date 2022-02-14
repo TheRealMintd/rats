@@ -1,7 +1,6 @@
 import React from "react";
 
 import "../styles/board.css";
-import { banquetGoals } from "./BanquetBoard";
 
 export class DiceBoard extends React.Component {
 	private diceOne: React.RefObject<HTMLImageElement>;
@@ -39,9 +38,6 @@ export class DiceBoard extends React.Component {
 			if (paragraph) {
 				paragraph.textContent = `The banquet goal is ${total}`;
 			}
-			document
-				.querySelector(banquetGoals[total - 2])
-				?.classList.add("shadow");
 		}, 1000);
 	}
 
