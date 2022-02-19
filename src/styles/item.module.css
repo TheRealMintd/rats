@@ -1,0 +1,26 @@
+.item {
+	height: 50px;
+	width: 50px;
+	margin-left: 1px;
+	margin-right: 1px;
+}
+
+.container {
+	height: 205px;
+	width: 15%;
+	margin: 10px;
+	padding: 10px;
+	background-color: #ffffff;
+	box-shadow: 0 15px 15px rgba(50, 50, 50, 0.2);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+}
+
+.itemContainer {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	flex: 1;
+	height: 80%;
+	align-items: center;
+}
