@@ -65,7 +65,7 @@
 }
 
 .dice-container {
-	width: 400px;
+	width: 250px;
 	margin: 10px;
 	padding: 25px;
 	background-color: #ffffff;
@@ -83,7 +83,7 @@
 }
 
 .dice-img {
-	width: 100px;
+	width: 80px;
 }
 
 .shake {
