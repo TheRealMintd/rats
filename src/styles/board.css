@@ -17,7 +17,6 @@
 }
 
 .board {
-	padding: 10px;
 	background: radial-gradient(
 		circle, 
 		rgba(174,227,238,1) 0%, 
@@ -30,7 +29,7 @@
 .column {
 	float: left;
 	padding: 10px;
-	margin: 10px;
+	margin: 5px;
 	border-radius: 8px;
 	box-shadow: 0 15px 15px rgba(50, 50, 50, 0.2);
 	background: #ffffff;
@@ -38,10 +37,12 @@
 
 .left {
 	width: 75%;
+	margin-left: 10px;
 }
 
 .right {
 	width: 25%;
+	margin-right: 10px;
 }
 
 .row {
@@ -70,7 +71,7 @@
 
 .main-container {
 	width: -webkit-fill-available;
-	margin: 10px;
+	margin: 5px 10px 5px 10px;
 	display: flex;
 	background-color: #ffffff;
 	box-shadow: 0 15px 15px rgba(50, 50, 50, 0.2);
