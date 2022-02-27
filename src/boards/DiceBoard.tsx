@@ -43,27 +43,31 @@ export class DiceBoard extends React.Component {
 
 	override render(): React.ReactNode {
 		return (
-			<div className="dice-container">
-				<div className="dice-wrapper">
-					<img
-						className="dice-img"
-						src="/dice-1.png"
-						ref={this.diceOne}
-					/>
-					<img
-						className="dice-img"
-						src="/dice-2.png"
-						ref={this.diceTwo}
-					/>
+			<div className="main-container">
+				<div className="dice-container">
+					<div className="dice-wrapper">
+						<img
+							className="dice-img"
+							src="/dice-1.png"
+							ref={this.diceOne}
+						/>
+						<img
+							className="dice-img"
+							src="/dice-2.png"
+							ref={this.diceTwo}
+						/>
+					</div>
+					<button
+						className="button-19"
+						role="button"
+						onClick={() => this.roll()}
+					>
+						Roll Dice
+					</button>
 				</div>
-				<p className="msg" ref={this.total}></p>
-				<button
-					className="button-19"
-					role="button"
-					onClick={() => this.roll()}
-				>
-					Roll Banquet Goal
-				</button>
+				<div>
+					<p className="msg" ref={this.total}></p>
+				</div>
 			</div>
 		);
 	}
