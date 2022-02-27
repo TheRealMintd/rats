@@ -67,6 +67,7 @@ const Item = (props: ItemProps): ReactElement => {
 				textAnchor="middle"
 				dominantBaseline="central"
 				fill="black"
+				fontFamily="'Kalam', cursive"
 			>
 				{props.children}
 			</text>

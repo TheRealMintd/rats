@@ -10,7 +10,7 @@ export const RoundBoard = ({ round }: RoundProps): ReactElement => {
   return (
     <div>
       <h1 className="heading">Round Number</h1>
-      <div>{round}</div>
+      <div className="msg">{round}</div>
     </div>
   );
 };
